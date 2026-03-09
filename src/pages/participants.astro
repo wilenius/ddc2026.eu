@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Participants Info">
+    <div class="container page-content">
+        <h1>Info for Participants</h1>
+        
+        <div class="content-wrapper">
+            <section>
+                <h2>Venue & logistics</h2>
+                <p>The tournament will be held at the Tali Sports Park (Talin liikuntapuisto) in Helsinki.</p>
+                <div class="map-placeholder">
+                    Map Placeholder / Embed
+                </div>
+            </section>
+
+            <section>
+                <h2>Accommodation</h2>
+                <p>Information about recommended hotels and hostels will be posted here soon.</p>
+            </section>
+
+            <section>
+                <h2>Travel</h2>
+                <p>Helsinki is easily accessible via Helsinki Airport (HEL). Public transport in the city is excellent.</p>
+            </section>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .page-content {
+        padding: 4rem var(--spacing-md);
+        max-width: 900px;
+    }
+    
+    section {
+        margin-bottom: 4rem;
+        background: white;
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--color-border);
+    }
+    
+    h2 {
+        color: var(--color-brand-blue);
+        font-size: 1.75rem;
+    }
+    
+    .map-placeholder {
+        background: var(--color-bg);
+        height: 300px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-muted);
+        margin-top: 1.5rem;
+        border: 2px dashed var(--color-border);
+    }
+</style>

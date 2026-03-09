@@ -1,0 +1,126 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="News">
+	<section class="hero">
+		<div class="container hero-content">
+			<h1>Double Disc Court<br>European Open 2026</h1>
+			<p class="hero-subtitle">July 25–26, 2026 • Helsinki, Finland</p>
+			<div class="hero-actions">
+				<a href="/info" class="btn">Tournament Info</a>
+				<a href="/registration" class="btn btn-outline">Registration Details</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="container news-section">
+		<h2>Latest News</h2>
+		<div class="news-grid">
+			<article class="news-card">
+				<div class="news-date">Dec 9, 2025</div>
+				<h3>Website Launch</h3>
+				<p>Welcome to the official website for the DDC European Open 2026. Stay tuned for more updates as we approach the tournament year!</p>
+			</article>
+            <article class="news-card">
+				<div class="news-date">Dec 1, 2025</div>
+				<h3>Save the Date</h3>
+				<p>Mark your calendars! The European Open will take place at Tali Sports Park in Helsinki on July 25-26, 2026.</p>
+			</article>
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.hero {
+		background: linear-gradient(135deg, var(--color-brand-blue) 0%, var(--color-brand-light) 100%);
+		color: white;
+		padding: 6rem 0;
+		margin-bottom: 4rem;
+        position: relative;
+        overflow: hidden;
+	}
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 80% 20%, rgba(255, 213, 111, 0.15) 0%, transparent 60%);
+        pointer-events: none;
+    }
+
+	.hero-content {
+		text-align: center;
+	}
+
+	h1 {
+		color: white;
+		font-size: 3.5rem;
+		font-weight: 800;
+		margin-bottom: 1.5rem;
+        letter-spacing: -0.02em;
+	}
+
+	.hero-subtitle {
+		font-size: 1.5rem;
+		opacity: 0.9;
+		margin-bottom: 2.5rem;
+        font-weight: 300;
+	}
+
+	.hero-actions {
+		display: flex;
+		justify-content: center;
+		gap: 1rem;
+	}
+    
+    .news-section {
+        padding-bottom: 4rem;
+    }
+    
+    .news-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .news-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: var(--shadow-md);
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 1px solid var(--color-border);
+    }
+    
+    .news-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .news-date {
+        color: var(--color-brand-teal);
+        font-weight: 600;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .news-card h3 {
+        color: var(--color-brand-blue);
+        margin-bottom: 0.75rem;
+        font-size: 1.25rem;
+    }
+    
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2.5rem;
+        }
+        .hero {
+            padding: 4rem 0;
+        }
+    }
+</style>
