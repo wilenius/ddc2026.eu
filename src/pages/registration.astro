@@ -13,12 +13,14 @@ import RegistrationForm from '../components/RegistrationForm.astro';
 
             <hr />
 
-            <RegistrationForm />
+            <p class="not-open">Registration is not yet open.</p>
+
+            <!-- <RegistrationForm /> -->
         </div>
     </div>
 </Layout>
 
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<!-- <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> -->
 
 <style>
     .page-content {
@@ -44,5 +46,10 @@ import RegistrationForm from '../components/RegistrationForm.astro';
         border: 0;
         border-top: 1px solid var(--color-border);
         margin: 2rem 0;
+    }
+
+    .not-open {
+        font-size: 1.15rem;
+        color: var(--color-text-muted);
     }
 </style>
