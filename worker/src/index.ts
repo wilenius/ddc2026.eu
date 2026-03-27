@@ -18,6 +18,7 @@ interface Registration {
   court: boolean;
   extraDiscs: number;
   fridayPickup: boolean;
+  publishName: boolean;
   totalCost: number;
   waiver: boolean;
   registeredAt: string;
@@ -173,6 +174,7 @@ export default {
         court,
         extraDiscs,
         fridayPickup: !!body.fridayPickup,
+        publishName: !!body.publishName,
         totalCost,
         waiver: true,
         registeredAt: new Date().toISOString(),
