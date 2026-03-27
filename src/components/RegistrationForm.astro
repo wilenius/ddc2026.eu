@@ -1,10 +1,10 @@
 ---
 // Cloudflare test key (always passes) — swap to real key for production
 // Real key: "0x4AAAAAACwTq5FIqepEzPVk"
-const TURNSTILE_SITE_KEY = "1x00000000000000000000AA";
+const TURNSTILE_SITE_KEY = "0x4AAAAAACwTq5FIqepEzPVk";
 // For local dev: "http://localhost:8787"
 // For production: "https://ddc2026-registration.heikki-wilenius.workers.dev"
-const WORKER_URL = "http://localhost:8787";
+const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
 ---
 
 <form id="registration-form" novalidate>
@@ -31,6 +31,22 @@ const WORKER_URL = "http://localhost:8787";
       </label>
     </div>
   </fieldset>
+
+  <div class="form-group">
+    <label for="division">Division preference <span class="required">*</span></label>
+    <select id="division" name="division" required>
+      <option value="">Select a division</option>
+      <option value="open">Open</option>
+      <option value="women">Women</option>
+      <option value="junior">Junior</option>
+    </select>
+    <details class="division-details">
+      <summary>More about divisions</summary>
+      <div class="division-info">
+        <p>The viability of the junior and women's divisions depends on the number of entries. A separate division final match (and possible semi-finals) will be held for women or juniors, even if everybody ends up playing in the Open division.</p>
+      </div>
+    </details>
+  </div>
 
   <div class="form-section"><span>Add-ons</span></div>
 
@@ -103,6 +119,16 @@ const WORKER_URL = "http://localhost:8787";
       <label class="checkbox-label">
         <input type="checkbox" id="friday-pickup" name="fridayPickup" />
         <span>I plan to participate in Friday afternoon's pickup games</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-group">
+    <legend>Participants Page <span class="optional">(optional)</span></legend>
+    <div class="checkbox-list">
+      <label class="checkbox-label">
+        <input type="checkbox" id="publish-name" name="publishName" />
+        <span>I consent to my name being published on the Participants page of this website</span>
       </label>
     </div>
   </fieldset>
@@ -258,6 +284,7 @@ const WORKER_URL = "http://localhost:8787";
       court: form.querySelector("#court").checked,
       extraDiscs: parseInt(form.querySelector("#extra-discs").value, 10),
       fridayPickup: form.querySelector("#friday-pickup").checked,
+      publishName: form.querySelector("#publish-name").checked,
       waiver: true,
       "cf-turnstile-response": turnstileToken,
     };
