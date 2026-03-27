@@ -1,60 +1,48 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import RegistrationForm from '../components/RegistrationForm.astro';
 ---
 
-<Layout title="Registration">
+<Layout title="Registration" contentMaxWidth={640}>
     <div class="container page-content">
         <h1>Registration</h1>
-        
+
         <div class="card">
-            <h2>Registration Opens Soon</h2>
-            <p class="lead">Registration for the Double Disc Court European Open 2026 will open in <strong>February 2026</strong>.</p>
-            
+            <h2>DDC European Open 2026</h2>
+            <p class="lead">Register below to secure your spot.</p>
+
             <hr />
-            
-            <h3>How to Register</h3>
-            <p>Details regarding the registration process, fees, and categories will be published here closer to the opening date.</p>
-            
-            <div class="cta-box">
-                <p>Stay tuned for updates!</p>
-            </div>
+
+            <RegistrationForm />
         </div>
     </div>
 </Layout>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
 <style>
     .page-content {
         padding: 4rem var(--spacing-md);
-        max-width: 800px;
+        max-width: 640px;
     }
-    
+
     .card {
         background: white;
         padding: 3rem;
-        border-radius: 12px;
+        border-radius: 2px;
         box-shadow: var(--shadow-sm);
-        border: 1px solid var(--color-border);
+        border-left: 4px solid var(--color-orange);
     }
-    
+
     .lead {
-        font-size: 1.25rem;
-        color: var(--color-text-main);
+        font-size: 1.15rem;
+        color: var(--color-text-muted);
         margin-bottom: 2rem;
     }
-    
+
     hr {
         border: 0;
         border-top: 1px solid var(--color-border);
         margin: 2rem 0;
-    }
-    
-    .cta-box {
-        margin-top: 2rem;
-        padding: 1.5rem;
-        background-color: rgba(44, 116, 179, 0.1); /* brand-teal with opacity */
-        border-radius: 8px;
-        text-align: center;
-        font-weight: 600;
-        color: var(--color-brand-blue);
     }
 </style>

@@ -3,9 +3,10 @@ import '../styles/global.css';
 
 interface Props {
 	title: string;
+	contentMaxWidth?: number;
 }
 
-const { title } = Astro.props;
+const { title, contentMaxWidth } = Astro.props;
 const currentPath = Astro.url.pathname;
 
 const navItems = [
@@ -26,15 +27,12 @@ const navItems = [
 		<meta name="generator" content={Astro.generator} />
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 		<title>{title} | DDC European Open 2026</title>
 	</head>
 	<body>
         <header class="nav-header">
             <div class="container nav-container">
-                <a href="/" class="logo">
-                    <img src="/logo.svg" alt="DDC 2026" class="logo-img" />
-                </a>
                 <nav class="nav-links">
                     {navItems.map(item => (
                         <a href={item.href} class={`nav-link ${currentPath === item.href ? 'active' : ''}`}>
@@ -45,10 +43,17 @@ const navItems = [
             </div>
         </header>
 
+        {contentMaxWidth && (
+            <a href="/" class="gutter-logo" aria-label="DDC European Open 2026"
+               style={`--content-half-width: ${contentMaxWidth / 2}px`}>
+                <img src="/DDC.png" alt="DDC European Open 2026" />
+            </a>
+        )}
+
 		<main>
 			<slot />
 		</main>
-        
+
         <footer>
             <div class="container footer-content">
                 <p>&copy; 2026 Double Disc Court European Open. Helsinki, Finland.</p>

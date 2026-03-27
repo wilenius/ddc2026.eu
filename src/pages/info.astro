@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Tournament Info">
+<Layout title="Tournament Info" contentMaxWidth={1200}>
     <div class="container page-content">
         <h1>Tournament Information</h1>
         
@@ -41,6 +41,24 @@ import Layout from '../layouts/Layout.astro';
                 </div>
             </section>
         </div>
+
+        <section class="organisers-section">
+            <h2>Organisers</h2>
+            <div class="organisers-logos">
+                <a href="https://www.tuplakiekko.fi" target="_blank" rel="noopener" class="organiser-logo">
+                    <img src="/HKI_DDC.png" alt="Helsinki DDC" />
+                </a>
+                <a href="https://www.slkl.fi" target="_blank" rel="noopener" class="organiser-logo">
+                    <img src="/slkl.png" alt="SLKL" />
+                </a>
+                <a href="https://www.hel.fi" target="_blank" rel="noopener" class="organiser-logo">
+                    <img src="/helsinki.png" alt="City of Helsinki" />
+                </a>
+            </div>
+            <p class="contact-email">
+                Questions? Contact us at <a href="mailto:info@ddc2026.eu">info@ddc2026.eu</a>
+            </p>
+        </section>
     </div>
 </Layout>
 
@@ -65,9 +83,9 @@ import Layout from '../layouts/Layout.astro';
     .info-card, .schedule-card {
         background: white;
         padding: 2rem;
-        border-radius: 12px;
+        border-radius: 2px;
         box-shadow: var(--shadow-sm);
-        border: 1px solid var(--color-border);
+        border-left: 4px solid var(--color-orange);
         height: 100%;
     }
     
@@ -85,7 +103,7 @@ import Layout from '../layouts/Layout.astro';
         letter-spacing: 0.05em;
         font-size: 0.75rem;
         font-weight: 700;
-        color: var(--color-brand-teal);
+        color: var(--color-orange);
         margin-bottom: 0.25rem;
     }
     
@@ -95,7 +113,7 @@ import Layout from '../layouts/Layout.astro';
     }
     
     .schedule-card h3 {
-        color: var(--color-brand-blue);
+        color: var(--color-black);
         border-bottom: 2px solid rgba(0,0,0,0.05);
         padding-bottom: 0.5rem;
         margin-top: 1.5rem;
@@ -114,7 +132,7 @@ import Layout from '../layouts/Layout.astro';
     li {
         margin-bottom: 1rem;
         padding-left: 1rem;
-        border-left: 3px solid var(--color-accent);
+        border-left: 3px solid var(--color-yellow);
     }
     
     .time {
@@ -126,5 +144,55 @@ import Layout from '../layouts/Layout.astro';
         font-weight: 600;
         margin-right: 0.5rem;
         color: var(--color-text-muted);
+    }
+
+    .organisers-section {
+        margin-top: 4rem;
+        padding-top: 3rem;
+        border-top: 2px solid var(--color-border);
+        text-align: center;
+    }
+
+    .organisers-logos {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 3rem;
+        margin: 2rem 0;
+    }
+
+    .organiser-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.85;
+        transition: opacity 0.2s;
+    }
+
+    .organiser-logo:hover {
+        opacity: 1;
+    }
+
+    .organiser-logo img {
+        height: 80px;
+        width: auto;
+        object-fit: contain;
+    }
+
+    .contact-email {
+        margin-top: 1.5rem;
+        font-size: 1rem;
+        color: var(--color-text-muted);
+    }
+
+    .contact-email a {
+        color: var(--color-orange);
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+    .contact-email a:hover {
+        color: var(--color-orange-deep);
     }
 </style>

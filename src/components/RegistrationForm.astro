@@ -1,0 +1,587 @@
+---
+// Cloudflare test key (always passes) — swap to real key for production
+// Real key: "0x4AAAAAACwTq5FIqepEzPVk"
+const TURNSTILE_SITE_KEY = "1x00000000000000000000AA";
+// For local dev: "http://localhost:8787"
+// For production: "https://ddc2026-registration.heikki-wilenius.workers.dev"
+const WORKER_URL = "http://localhost:8787";
+---
+
+<form id="registration-form" novalidate>
+  <div class="form-group">
+    <label for="name">Full Name <span class="required">*</span></label>
+    <input type="text" id="name" name="name" required />
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email <span class="required">*</span></label>
+    <input type="email" id="email" name="email" required />
+  </div>
+
+  <fieldset class="form-group">
+    <legend>Partner <span class="required">*</span></legend>
+    <div class="form-group" style="margin-top: 0.25rem;">
+      <label for="partner">My partner is:</label>
+      <input type="text" id="partner" name="partner" placeholder="Partner's name" />
+    </div>
+    <div class="checkbox-list" style="margin-top: 0.5rem;">
+      <label class="checkbox-label">
+        <input type="checkbox" id="looking-for-partner" name="lookingForPartner" />
+        <span>I'm looking for a partner</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <div class="form-section"><span>Add-ons</span></div>
+
+  <fieldset class="form-group">
+    <legend>Lunch <span class="optional">(optional, +15&euro; each)</span></legend>
+    <p class="field-hint">All lunches are vegan and nut-free.</p>
+    <div class="checkbox-list">
+      <label class="checkbox-label">
+        <input type="checkbox" id="lunch-sat" name="lunchSat" />
+        <span>Saturday July 25th</span>
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="lunch-sun" name="lunchSun" />
+        <span>Sunday July 26th</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <div class="form-group">
+    <label for="extra-discs">Extra Discs <span class="optional">(optional, +7&euro; each)</span></label>
+    <p class="field-hint">Registration includes one orange DDC disc with the tournament logo. You may order additional discs.</p>
+    <select id="extra-discs" name="extraDiscs">
+      <option value="0">0 extra discs</option>
+      <option value="1">1 extra disc</option>
+      <option value="2">2 extra discs</option>
+      <option value="3">3 extra discs</option>
+      <option value="4">4 extra discs</option>
+      <option value="5">5 extra discs</option>
+      <option value="6">6 extra discs</option>
+      <option value="7">7 extra discs</option>
+      <option value="8">8 extra discs</option>
+      <option value="9">9 extra discs</option>
+    </select>
+  </div>
+
+  <fieldset class="form-group">
+    <legend>Court <span class="optional">(optional, +100&euro;)</span></legend>
+    <div class="checkbox-list">
+      <label class="checkbox-label">
+        <input type="checkbox" id="court" name="court" />
+        <span>Purchase a court used in the tournament to take home afterwards</span>
+      </label>
+    </div>
+    <details class="court-details">
+      <summary>More about the court</summary>
+      <div class="court-info">
+        <img src="/swedisc.jpg" alt="SweDisc Pro Court" class="court-photo" />
+        <div>
+          <strong>SweDisc Pro Court</strong>
+          <p>Same model used at the 2025 World Championships. Diameter 35 cm, weight 2.5 kg.</p>
+          <p class="court-price">100&euro;</p>
+        </div>
+      </div>
+    </details>
+  </fieldset>
+
+  <div class="form-group">
+    <label>Tournament Jersey <span class="optional">(optional)</span></label>
+    <p class="jersey-info">Want an official tournament jersey with your name and colour of choice? Order it from the <a href="https://ddc2026.seurashop.fi" target="_blank" rel="noopener">Seurashop</a> website and collect it at the tournament.</p>
+  </div>
+
+  <div class="form-group">
+    <label for="allergies">Allergies or dietary needs <span class="optional">(optional)</span></label>
+    <textarea id="allergies" name="allergies" rows="2" placeholder="e.g. gluten-free, soy allergy..."></textarea>
+  </div>
+
+  <fieldset class="form-group">
+    <legend>Friday Afternoon <span class="optional">(optional)</span></legend>
+    <div class="checkbox-list">
+      <label class="checkbox-label">
+        <input type="checkbox" id="friday-pickup" name="fridayPickup" />
+        <span>I plan to participate in Friday afternoon's pickup games</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-group liability-section">
+    <legend>Discharge of Liability <span class="required">*</span></legend>
+    <div class="liability-text">
+      <p>Players are expected to arrange their own insurance (travel, health and liability). All event participants are strongly recommended to obtain adequate cover prior to booking flights and departing their home country.</p>
+      <p>By registering for the event, participants acknowledge that neither the event organisers, nor the Helsinki DDC, the Finnish Flying Disc Federation, nor the City of Helsinki can be held responsible for any risks or costs associated with injury or ill health at the DDC European Open.</p>
+      <p>This also applies to theft of participants' sports equipment or personal belongings &mdash; whether in accommodation, during transport, or at the sports facilities.</p>
+    </div>
+    <div class="checkbox-list">
+      <label class="checkbox-label">
+        <input type="checkbox" id="waiver" name="waiver" required />
+        <span>I agree <span class="required">*</span></span>
+      </label>
+    </div>
+  </fieldset>
+
+  <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-theme="light"></div>
+
+  <div id="form-message" class="form-message" hidden></div>
+
+  <div class="submit-row">
+    <button type="submit" class="btn submit-btn">Register</button>
+    <div id="cost-breakdown" class="cost-breakdown">
+      <div class="cost-line">Registration fee <span>150&euro;</span></div>
+      <div class="cost-total">Total: <strong>150&euro;</strong></div>
+    </div>
+  </div>
+</form>
+
+<div id="confirmation" class="confirmation" hidden>
+  <div id="order-summary" class="order-summary"></div>
+  <h2>Registration Confirmed</h2>
+  <p>Thank you for registering for the DDC European Open 2026! You will receive payment instructions by email.</p>
+</div>
+
+<script define:vars={{ WORKER_URL }}>
+  const form = document.getElementById("registration-form");
+  const message = document.getElementById("form-message");
+  const confirmation = document.getElementById("confirmation");
+  const breakdown = document.getElementById("cost-breakdown");
+
+  const BASE_FEE = 150;
+  const LUNCH_FEE = 15;
+  const DISC_FEE = 7;
+  const COURT_FEE = 100;
+
+  function updateCost() {
+    const lunchSat = form.querySelector("#lunch-sat").checked;
+    const lunchSun = form.querySelector("#lunch-sun").checked;
+    const court = form.querySelector("#court").checked;
+    const extraDiscs = parseInt(form.querySelector("#extra-discs").value, 10);
+
+    let lines = [`<div class="cost-line">Registration fee <span>${BASE_FEE}&euro;</span></div>`];
+    let total = BASE_FEE;
+
+    const lunchCount = (lunchSat ? 1 : 0) + (lunchSun ? 1 : 0);
+    if (lunchCount > 0) {
+      const lunchCost = lunchCount * LUNCH_FEE;
+      total += lunchCost;
+      lines.push(`<div class="cost-line">Lunch &times; ${lunchCount} <span>${lunchCost}&euro;</span></div>`);
+    }
+    if (court) {
+      total += COURT_FEE;
+      lines.push(`<div class="cost-line">SweDisc Pro Court <span>${COURT_FEE}&euro;</span></div>`);
+    }
+    if (extraDiscs > 0) {
+      const discCost = extraDiscs * DISC_FEE;
+      total += discCost;
+      lines.push(`<div class="cost-line">Extra discs &times; ${extraDiscs} <span>${discCost}&euro;</span></div>`);
+    }
+
+    lines.push(`<div class="cost-total">Total: <strong>${total}&euro;</strong></div>`);
+    breakdown.innerHTML = lines.join("");
+  }
+
+  form.querySelector("#lunch-sat").addEventListener("change", updateCost);
+  form.querySelector("#lunch-sun").addEventListener("change", updateCost);
+  form.querySelector("#court").addEventListener("change", updateCost);
+  form.querySelector("#extra-discs").addEventListener("change", updateCost);
+
+  // Partner fields: mutually exclusive
+  const partnerInput = form.querySelector("#partner");
+  const lookingCheckbox = form.querySelector("#looking-for-partner");
+
+  lookingCheckbox.addEventListener("change", () => {
+    if (lookingCheckbox.checked) {
+      partnerInput.value = "";
+      partnerInput.disabled = true;
+    } else {
+      partnerInput.disabled = false;
+    }
+  });
+
+  partnerInput.addEventListener("input", () => {
+    if (partnerInput.value.trim()) {
+      lookingCheckbox.checked = false;
+      lookingCheckbox.disabled = true;
+    } else {
+      lookingCheckbox.disabled = false;
+    }
+  });
+
+  function showMessage(text, isError) {
+    message.textContent = text;
+    message.hidden = false;
+    message.className = "form-message " + (isError ? "error" : "success");
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const partnerVal = form.querySelector("#partner").value.trim();
+    const lookingVal = form.querySelector("#looking-for-partner").checked;
+    if (!partnerVal && !lookingVal) {
+      showMessage("Please enter your partner's name or indicate you're looking for one.", true);
+      return;
+    }
+
+    const waiver = form.querySelector("#waiver");
+    if (!waiver.checked) {
+      showMessage("You must agree to the discharge of liability to register.", true);
+      return;
+    }
+
+    if (!form.checkValidity()) {
+      showMessage("Please fill in all required fields.", true);
+      return;
+    }
+
+    const turnstileInput = form.querySelector('[name="cf-turnstile-response"]');
+    const turnstileToken = turnstileInput ? turnstileInput.value : "";
+    if (!turnstileToken) {
+      showMessage("Please complete the CAPTCHA verification.", true);
+      return;
+    }
+
+    const submitBtn = form.querySelector(".submit-btn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+    message.hidden = true;
+
+    const data = {
+      name: form.querySelector("#name").value.trim(),
+      email: form.querySelector("#email").value.trim(),
+      lunchSat: form.querySelector("#lunch-sat").checked,
+      lunchSun: form.querySelector("#lunch-sun").checked,
+      partner: form.querySelector("#partner").value.trim(),
+      lookingForPartner: form.querySelector("#looking-for-partner").checked,
+      allergies: form.querySelector("#allergies").value.trim(),
+      court: form.querySelector("#court").checked,
+      extraDiscs: parseInt(form.querySelector("#extra-discs").value, 10),
+      fridayPickup: form.querySelector("#friday-pickup").checked,
+      waiver: true,
+      "cf-turnstile-response": turnstileToken,
+    };
+
+    try {
+      const res = await fetch(WORKER_URL + "/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        document.getElementById("order-summary").innerHTML = breakdown.innerHTML;
+        form.hidden = true;
+        confirmation.hidden = false;
+      } else {
+        const body = await res.json().catch(() => ({}));
+        showMessage(body.error || "Registration failed. Please try again.", true);
+      }
+    } catch {
+      showMessage("Network error. Please check your connection and try again.", true);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Register";
+    }
+  });
+</script>
+
+<style>
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  form[hidden] {
+    display: none;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  fieldset.form-group {
+    border: none;
+    padding: 0;
+  }
+
+  label, legend {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-text-main);
+  }
+
+  .required {
+    color: var(--color-orange);
+  }
+
+  .optional {
+    font-weight: 400;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+  }
+
+  .field-hint {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  select,
+  textarea {
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    background: white;
+    transition: border-color 0.2s;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--color-orange);
+    box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.15);
+  }
+
+  .checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .checkbox-group {
+    margin-top: 0.5rem;
+  }
+
+  .checkbox-label {
+    font-weight: 400;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    cursor: pointer;
+    line-height: 1.5;
+  }
+
+  .checkbox-label input {
+    margin-top: 0.3rem;
+    flex-shrink: 0;
+  }
+
+  .cf-turnstile {
+    margin-top: 0.5rem;
+  }
+
+  .submit-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .submit-btn {
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .cost-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.95rem;
+    min-width: 200px;
+  }
+
+  .cost-line {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-text-muted);
+  }
+
+  .cost-total {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.35rem;
+    margin-top: 0.25rem;
+    font-size: 1.1rem;
+    color: var(--color-text-main);
+  }
+
+  .form-message {
+    padding: 0.875rem 1rem;
+    border-radius: 4px;
+    font-size: 0.95rem;
+  }
+
+  .form-message.error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+
+  .form-message.success {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+  }
+
+  .order-summary {
+    background: #faf5f0;
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-orange);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.95rem;
+    min-width: 200px;
+    max-width: 360px;
+  }
+
+  .order-summary .cost-total {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.35rem;
+    margin-top: 0.25rem;
+    font-size: 1.1rem;
+    color: var(--color-text-main);
+  }
+
+  .order-summary .cost-line {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-text-muted);
+  }
+
+  /* Section divider */
+  .form-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.25rem 0 -0.25rem;
+  }
+
+  .form-section::before,
+  .form-section::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .form-section span {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  /* Jersey info */
+  .jersey-info {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  /* Court details */
+  .court-details {
+    margin-top: 0.5rem;
+  }
+
+  .court-details summary {
+    font-size: 0.9rem;
+    color: var(--color-orange);
+    cursor: pointer;
+    font-weight: 600;
+    user-select: none;
+  }
+
+  .court-details summary:hover {
+    color: var(--color-orange-deep);
+  }
+
+  .court-info {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    padding: 1rem;
+    background: #faf5f0;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    align-items: flex-start;
+  }
+
+  .court-photo {
+    width: 120px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    object-fit: cover;
+  }
+
+  .court-info p {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 0.25rem;
+  }
+
+  .court-price {
+    font-weight: 700;
+    color: var(--color-text-main) !important;
+    font-size: 1rem !important;
+    margin-top: 0.5rem !important;
+  }
+
+  /* Liability section */
+  .liability-text {
+    background: #f9f6f2;
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-orange);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .liability-text p {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .liability-text p + p {
+    margin-top: 0.75rem;
+  }
+
+  .confirmation h2 {
+    color: var(--color-orange);
+  }
+
+  .confirmation p {
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+  }
+</style>
