@@ -4,7 +4,7 @@ compatibility_date = "2024-12-01"
 
 [vars]
 ALLOWED_ORIGIN = "https://ddc2026.eu"
-EMAIL_FROM = "DDC European Open 2026 <registration@send.ddc2026.eu>"
+EMAIL_FROM = "DDC European Open 2026 <registration@ddc2026.eu>"
 
 [[kv_namespaces]]
 binding = "REGISTRATIONS"
