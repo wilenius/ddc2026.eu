@@ -132,7 +132,11 @@ import Layout from '../layouts/Layout.astro';
         color: var(--color-text-muted);
     }
 
-    #participants-list :global(.participant-list li.anonymous) {
+    #participants-list :global(.participant-list li > span:first-of-type) {
+        flex: 1;
+    }
+
+    #participants-list :global(.participant-list li.anonymous > span:first-of-type) {
         color: var(--color-text-muted);
         font-style: italic;
     }
