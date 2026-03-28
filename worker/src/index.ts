@@ -99,6 +99,7 @@ async function sendConfirmationEmail(reg: Registration, env: Env): Promise<void>
     },
     body: JSON.stringify({
       from: env.EMAIL_FROM,
+      reply_to: 'registration@ddc2026.eu',
       to: [reg.email],
       subject,
       html,
