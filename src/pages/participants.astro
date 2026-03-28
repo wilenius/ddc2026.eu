@@ -45,19 +45,31 @@ import Layout from '../layouts/Layout.astro';
   async function loadParticipants() {
     try {
       const res = await fetch(`${WORKER_URL}/participants`);
-      const participants: { name: string }[] = await res.json();
+      const participants: { name: string; division: string }[] = await res.json();
 
       if (participants.length === 0) {
         container.innerHTML = "<p>No confirmed participants yet.</p>";
         return;
       }
 
+      const divisionLabels: Record<string, string> = {
+        open: "Open",
+        women: "Women",
+        junior: "Junior",
+      };
+
       const ol = document.createElement("ol");
       ol.className = "participant-list";
       for (const p of participants) {
         const li = document.createElement("li");
-        li.textContent = p.name;
         if (p.name === "Anonymous") li.classList.add("anonymous");
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = p.name;
+        li.appendChild(nameSpan);
+        const divSpan = document.createElement("span");
+        divSpan.className = "division-badge";
+        divSpan.textContent = divisionLabels[p.division] || "Open";
+        li.appendChild(divSpan);
         ol.appendChild(li);
       }
       container.replaceChildren(ol);
@@ -98,18 +110,41 @@ import Layout from '../layouts/Layout.astro';
     }
 
     .participant-list {
-        padding-left: 1.5rem;
+        list-style: none;
+        padding: 0;
         margin: 0;
+        counter-reset: participant;
     }
 
     .participant-list li {
         padding: 0.35rem 0;
         font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        counter-increment: participant;
+    }
+
+    .participant-list li::before {
+        content: counter(participant) ".";
+        min-width: 1.5rem;
+        color: var(--color-text-muted);
     }
 
     .participant-list li.anonymous {
         color: var(--color-text-muted);
         font-style: italic;
+    }
+
+    .division-badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        background: #f5f0eb;
+        color: var(--color-text-muted);
+        padding: 0.1rem 0.5rem;
+        border-radius: 3px;
     }
 
     .loading {

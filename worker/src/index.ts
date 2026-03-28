@@ -18,6 +18,7 @@ interface Registration {
   court: boolean;
   extraDiscs: number;
   fridayPickup: boolean;
+  division: string;
   publishName: boolean;
   totalCost: number;
   waiver: boolean;
@@ -181,6 +182,7 @@ export default {
         court,
         extraDiscs,
         fridayPickup: !!body.fridayPickup,
+        division: (body.division || "open").toLowerCase(),
         publishName: !!body.publishName,
         totalCost,
         waiver: true,
@@ -281,13 +283,16 @@ export default {
       const indexRaw = await env.REGISTRATIONS.get("reg:_index");
       const index: string[] = indexRaw ? JSON.parse(indexRaw) : [];
 
-      const participants: { name: string }[] = [];
+      const participants: { name: string; division: string }[] = [];
       for (const email of index) {
         const raw = await env.REGISTRATIONS.get(`reg:${email}`);
         if (!raw) continue;
         const reg: Registration = JSON.parse(raw);
         if (!reg.claimsToHavePaid) continue;
-        participants.push({ name: reg.publishName ? reg.name : "Anonymous" });
+        participants.push({
+          name: reg.publishName ? reg.name : "Anonymous",
+          division: reg.division || "open",
+        });
       }
 
       return new Response(JSON.stringify(participants), {
