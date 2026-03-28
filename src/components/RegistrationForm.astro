@@ -240,31 +240,85 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
     message.className = "form-message " + (isError ? "error" : "success");
   }
 
+  // Clear field error on interaction
+  form.addEventListener("input", (e) => {
+    const field = e.target;
+    if (field.classList.contains("input-error")) {
+      field.classList.remove("input-error");
+      const err = field.nextElementSibling;
+      if (err && err.classList.contains("field-error")) err.remove();
+    }
+  });
+  form.addEventListener("change", (e) => {
+    const field = e.target;
+    if (field.classList.contains("input-error")) {
+      field.classList.remove("input-error");
+      const err = field.nextElementSibling;
+      if (err && err.classList.contains("field-error")) err.remove();
+    }
+  });
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    // Clear previous field errors
+    form.querySelectorAll(".field-error").forEach(el => el.remove());
+    form.querySelectorAll(".input-error").forEach(el => el.classList.remove("input-error"));
+
+    let firstError = null;
+
+    function addFieldError(field, msg) {
+      field.classList.add("input-error");
+      const err = document.createElement("span");
+      err.className = "field-error";
+      err.textContent = msg;
+      field.insertAdjacentElement("afterend", err);
+      if (!firstError) firstError = field;
+    }
+
+    const nameField = form.querySelector("#name");
+    if (!nameField.value.trim()) {
+      addFieldError(nameField, "Please enter your full name.");
+    }
+
+    const emailField = form.querySelector("#email");
+    if (!emailField.value.trim()) {
+      addFieldError(emailField, "Please enter your email address.");
+    } else if (!emailField.validity.valid) {
+      addFieldError(emailField, "Please enter a valid email address.");
+    }
 
     const partnerVal = form.querySelector("#partner").value.trim();
     const lookingVal = form.querySelector("#looking-for-partner").checked;
     if (!partnerVal && !lookingVal) {
-      showMessage("Please enter your partner's name or indicate you're looking for one.", true);
-      return;
+      const partnerField = form.querySelector("#partner");
+      addFieldError(partnerField, "Please enter your partner's name or check \"I'm looking for a partner\".");
+    }
+
+    const divisionField = form.querySelector("#division");
+    if (!divisionField.value) {
+      addFieldError(divisionField, "Please select a division.");
     }
 
     const waiver = form.querySelector("#waiver");
     if (!waiver.checked) {
-      showMessage("You must agree to the discharge of liability to register.", true);
-      return;
-    }
-
-    if (!form.checkValidity()) {
-      showMessage("Please fill in all required fields.", true);
-      return;
+      addFieldError(waiver, "You must agree to the discharge of liability to register.");
     }
 
     const turnstileInput = form.querySelector('[name="cf-turnstile-response"]');
     const turnstileToken = turnstileInput ? turnstileInput.value : "";
     if (!turnstileToken) {
-      showMessage("Please complete the CAPTCHA verification.", true);
+      const turnstileWidget = form.querySelector(".cf-turnstile");
+      if (!firstError) firstError = turnstileWidget;
+      const err = document.createElement("span");
+      err.className = "field-error";
+      err.textContent = "Please complete the CAPTCHA verification.";
+      turnstileWidget.insertAdjacentElement("afterend", err);
+    }
+
+    if (firstError) {
+      firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (firstError.focus) firstError.focus();
       return;
     }
 
@@ -455,6 +509,17 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
     margin-top: 0.25rem;
     font-size: 1.1rem;
     color: var(--color-text-main);
+  }
+
+  .input-error {
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15) !important;
+  }
+
+  .field-error {
+    color: #991b1b;
+    font-size: 0.85rem;
+    margin-top: 0.15rem;
   }
 
   .form-message {
