@@ -269,8 +269,8 @@ export default {
 <style>body{font-family:sans-serif;max-width:600px;margin:4rem auto;padding:0 1rem;text-align:center;}h1{color:#ff6b00;}</style></head>
 <body>
 <h1>Thank you, ${reg.name}!</h1>
-<p>We've noted your payment confirmation. Once we verify the transfer, your name will appear on the <a href="https://ddc2026.eu/participants">list of confirmed participants</a>.</p>
-<p>See you at the tournament!</p>
+<p>We've noted your payment confirmation. Your name will appear on the <a href="https://ddc2026.eu/participants">list of confirmed participants</a>, if you gave your consent to that.</p>
+<p>Stay tuned for more updates!</p>
 </body></html>`, {
         status: 200,
         headers: { "Content-Type": "text/html; charset=utf-8" },
