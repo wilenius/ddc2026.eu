@@ -9,7 +9,9 @@ import Layout from '../layouts/Layout.astro';
         <div class="content-wrapper">
             <section>
                 <h2>List of confirmed players</h2>
-                <p>Coming soon.</p>
+                <div id="participants-list">
+                    <p class="loading">Loading participants…</p>
+                </div>
             </section>
 
             <section>
@@ -35,6 +37,37 @@ import Layout from '../layouts/Layout.astro';
         </div>
     </div>
 </Layout>
+
+<script>
+  const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
+  const container = document.getElementById("participants-list")!;
+
+  async function loadParticipants() {
+    try {
+      const res = await fetch(`${WORKER_URL}/participants`);
+      const participants: { name: string }[] = await res.json();
+
+      if (participants.length === 0) {
+        container.innerHTML = "<p>No confirmed participants yet.</p>";
+        return;
+      }
+
+      const ol = document.createElement("ol");
+      ol.className = "participant-list";
+      for (const p of participants) {
+        const li = document.createElement("li");
+        li.textContent = p.name;
+        if (p.name === "Anonymous") li.classList.add("anonymous");
+        ol.appendChild(li);
+      }
+      container.replaceChildren(ol);
+    } catch {
+      container.innerHTML = "<p>Could not load participants. Please try again later.</p>";
+    }
+  }
+
+  loadParticipants();
+</script>
 
 <style>
     .page-content {
@@ -62,5 +95,24 @@ import Layout from '../layouts/Layout.astro';
         border: 1px solid var(--color-border);
         border-radius: 8px;
         margin-top: 1.5rem;
+    }
+
+    .participant-list {
+        padding-left: 1.5rem;
+        margin: 0;
+    }
+
+    .participant-list li {
+        padding: 0.35rem 0;
+        font-size: 1rem;
+    }
+
+    .participant-list li.anonymous {
+        color: var(--color-text-muted);
+        font-style: italic;
+    }
+
+    .loading {
+        color: var(--color-text-muted);
     }
 </style>

@@ -22,6 +22,9 @@ interface Registration {
   totalCost: number;
   waiver: boolean;
   registeredAt: string;
+  paymentToken: string;
+  claimsToHavePaid: boolean;
+  paidConfirmedAt: string | null;
 }
 
 function corsHeaders(origin: string): Record<string, string> {
@@ -49,7 +52,7 @@ async function verifyTurnstile(token: string, secret: string): Promise<boolean> 
   return data.success;
 }
 
-function buildConfirmationEmail(reg: Registration): { subject: string; html: string } {
+function buildConfirmationEmail(reg: Registration, workerUrl: string): { subject: string; html: string } {
   const lines: string[] = [];
   lines.push(`Registration fee: 150€`);
   if (reg.lunchSat) lines.push(`Lunch Saturday July 25th: 15€`);
@@ -83,14 +86,15 @@ ${reg.allergies ? `<p><strong>Allergies/dietary needs:</strong> ${reg.allergies}
 <tr><td style="padding:2px 12px 2px 0;font-weight:bold;">Reference</td><td>DDC2026 ${reg.name}</td></tr>
 </table>
 <p>Please complete the payment within 14 days to secure your spot.</p>
+<p><strong>Once you have transferred the registration fee, <a href="${workerUrl}/confirm-payment?token=${reg.paymentToken}">click here to confirm your payment</a>.</strong> This will also add your name to the list of confirmed participants on our website, if you gave consent to that during registration.</p>
 <p>See you at the tournament!<br>DDC European Open 2026 Organizers</p>
 `.trim();
 
   return { subject: 'DDC European Open 2026 — Registration Confirmed', html };
 }
 
-async function sendConfirmationEmail(reg: Registration, env: Env): Promise<void> {
-  const { subject, html } = buildConfirmationEmail(reg);
+async function sendConfirmationEmail(reg: Registration, env: Env, workerUrl: string): Promise<void> {
+  const { subject, html } = buildConfirmationEmail(reg, workerUrl);
   await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -164,6 +168,8 @@ export default {
       const partner = (body.partner || "").trim().slice(0, 200);
       const lookingForPartner = !!body.lookingForPartner && !partner;
 
+      const paymentToken = crypto.randomUUID();
+
       const registration: Registration = {
         name,
         email,
@@ -179,9 +185,13 @@ export default {
         totalCost,
         waiver: true,
         registeredAt: new Date().toISOString(),
+        paymentToken,
+        claimsToHavePaid: false,
+        paidConfirmedAt: null,
       };
 
       await env.REGISTRATIONS.put(`reg:${email}`, JSON.stringify(registration));
+      await env.REGISTRATIONS.put(`token:${paymentToken}`, email);
 
       // Update index
       const indexRaw = await env.REGISTRATIONS.get("reg:_index");
@@ -191,7 +201,8 @@ export default {
 
       // Send confirmation email (fire-and-forget — don't block registration on email failure)
       try {
-        await sendConfirmationEmail(registration, env);
+        const workerUrl = url.origin;
+        await sendConfirmationEmail(registration, env, workerUrl);
       } catch {
         // Log but don't fail the registration
         console.error("Failed to send confirmation email to", email);
@@ -217,6 +228,72 @@ export default {
       );
 
       return jsonResponse(registrations.filter(Boolean), 200, origin);
+    }
+
+    if (url.pathname === "/confirm-payment" && request.method === "GET") {
+      const token = url.searchParams.get("token");
+      if (!token) {
+        return new Response("<h1>Invalid link</h1><p>No token provided.</p>", {
+          status: 400,
+          headers: { "Content-Type": "text/html; charset=utf-8" },
+        });
+      }
+
+      const email = await env.REGISTRATIONS.get(`token:${token}`);
+      if (!email) {
+        return new Response("<h1>Invalid link</h1><p>This payment confirmation link is not valid.</p>", {
+          status: 404,
+          headers: { "Content-Type": "text/html; charset=utf-8" },
+        });
+      }
+
+      const raw = await env.REGISTRATIONS.get(`reg:${email}`);
+      if (!raw) {
+        return new Response("<h1>Registration not found</h1>", {
+          status: 404,
+          headers: { "Content-Type": "text/html; charset=utf-8" },
+        });
+      }
+
+      const reg: Registration = JSON.parse(raw);
+      if (!reg.claimsToHavePaid) {
+        reg.claimsToHavePaid = true;
+        reg.paidConfirmedAt = new Date().toISOString();
+        await env.REGISTRATIONS.put(`reg:${email}`, JSON.stringify(reg));
+      }
+
+      return new Response(`
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Payment Confirmed</title>
+<style>body{font-family:sans-serif;max-width:600px;margin:4rem auto;padding:0 1rem;text-align:center;}h1{color:#ff6b00;}</style></head>
+<body>
+<h1>Thank you, ${reg.name}!</h1>
+<p>We've noted your payment confirmation. Once we verify the transfer, your name will appear on the <a href="https://ddc2026.eu/participants">list of confirmed participants</a>.</p>
+<p>See you at the tournament!</p>
+</body></html>`, {
+        status: 200,
+        headers: { "Content-Type": "text/html; charset=utf-8" },
+      });
+    }
+
+    if (url.pathname === "/participants" && request.method === "GET") {
+      const indexRaw = await env.REGISTRATIONS.get("reg:_index");
+      const index: string[] = indexRaw ? JSON.parse(indexRaw) : [];
+
+      const participants: { name: string }[] = [];
+      for (const email of index) {
+        const raw = await env.REGISTRATIONS.get(`reg:${email}`);
+        if (!raw) continue;
+        const reg: Registration = JSON.parse(raw);
+        if (!reg.claimsToHavePaid) continue;
+        participants.push({ name: reg.publishName ? reg.name : "Anonymous" });
+      }
+
+      return new Response(JSON.stringify(participants), {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders(origin) },
+      });
     }
 
     return jsonResponse({ error: "Not found" }, 404, origin);
