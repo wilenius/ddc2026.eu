@@ -109,14 +109,14 @@ import Layout from '../layouts/Layout.astro';
         margin-top: 1.5rem;
     }
 
-    .participant-list {
+    #participants-list :global(.participant-list) {
         list-style: none;
         padding: 0;
         margin: 0;
         counter-reset: participant;
     }
 
-    .participant-list li {
+    #participants-list :global(.participant-list li) {
         padding: 0.35rem 0;
         font-size: 1rem;
         display: flex;
@@ -125,18 +125,19 @@ import Layout from '../layouts/Layout.astro';
         counter-increment: participant;
     }
 
-    .participant-list li::before {
+    #participants-list :global(.participant-list li::before) {
         content: counter(participant) ".";
-        min-width: 1.5rem;
+        min-width: 1.75rem;
+        flex-shrink: 0;
         color: var(--color-text-muted);
     }
 
-    .participant-list li.anonymous {
+    #participants-list :global(.participant-list li.anonymous) {
         color: var(--color-text-muted);
         font-style: italic;
     }
 
-    .division-badge {
+    #participants-list :global(.division-badge) {
         font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
