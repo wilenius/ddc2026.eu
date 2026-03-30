@@ -87,7 +87,7 @@ ${reg.allergies ? `<p><strong>Allergies/dietary needs:</strong> ${reg.allergies}
 <p>See you at the tournament!<br>DDC European Open 2026 Organizers</p>
 `.trim();
 
-  return { subject: 'DDC European Open 2026 — Registration Confirmed', html };
+  return { subject: 'DDC European Open 2026 — Registration details – please confirm', html };
 }
 
 async function sendConfirmationEmail(reg: Registration, env: Env, workerUrl: string): Promise<void> {
@@ -267,8 +267,8 @@ export default {
 <style>body{font-family:sans-serif;max-width:600px;margin:4rem auto;padding:0 1rem;text-align:center;}h1{color:#ff6b00;}</style></head>
 <body>
 <h1>Thank you, ${reg.name}!</h1>
-<p>We've noted your payment confirmation. Your name will appear on the <a href="https://ddc2026.eu/participants">list of confirmed participants</a>, if you gave your consent to that.</p>
-<p>Stay tuned for more updates!</p>
+<p>Your participation is confirmed.${reg.publishName ? ' Your name will appear on the <a href="https://ddc2026.eu/participants">list of registered players</a>.' : ''}</p>
+<p>See you at the tournament!</p>
 </body></html>`, {
         status: 200,
         headers: { "Content-Type": "text/html; charset=utf-8" },
