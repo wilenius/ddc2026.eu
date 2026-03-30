@@ -64,7 +64,7 @@ function buildConfirmationEmail(reg: Registration, workerUrl: string): { subject
   const html = `
 <h2>DDC European Open 2026 — Registration Confirmed</h2>
 <p>Hi ${reg.name},</p>
-<p>Thank you for registering! Here is your registration summary and payment details.</p>
+<p>Thank you for registering! Here is your registration summary.</p>
 <h3>Cost breakdown</h3>
 <table style="border-collapse:collapse;">
 ${lines.map(l => {
@@ -79,15 +79,11 @@ ${lines.map(l => {
 ${reg.partner ? `<p><strong>Partner:</strong> ${reg.partner}</p>` : ''}
 ${reg.lookingForPartner ? `<p><strong>Partner:</strong> Looking for a partner</p>` : ''}
 ${reg.allergies ? `<p><strong>Allergies/dietary needs:</strong> ${reg.allergies}</p>` : ''}
-<h3>Payment instructions</h3>
-<p>Please transfer <strong>${reg.totalCost}€</strong> to the following account:</p>
-<table style="border-collapse:collapse;">
-<tr><td style="padding:2px 12px 2px 0;font-weight:bold;">IBAN</td><td>TODO</td></tr>
-<tr><td style="padding:2px 12px 2px 0;font-weight:bold;">BIC</td><td>TODO</td></tr>
-<tr><td style="padding:2px 12px 2px 0;font-weight:bold;">Reference</td><td>DDC2026 ${reg.name}</td></tr>
-</table>
-<p>Please complete the payment within 14 days to secure your spot.</p>
-<p><strong>Once you have transferred the registration fee, <a href="${workerUrl}/confirm-payment?token=${reg.paymentToken}">click here to confirm your payment</a>.</strong> This will also add your name to the list of confirmed participants on our website, if you gave consent to that during registration.</p>
+<h3>Payment</h3>
+<p>The registration invoice will be sent to this email address from the Finnish Flying Disc Association once the registration period has closed.</p>
+<h3>Confirm your participation</h3>
+<p>By clicking the link below, you'll confirm your participation${reg.publishName ? ', and your name will be displayed on the list of registered players on the <a href="https://ddc2026.eu/participants">tournament website</a>' : '. Since you did not give consent during registration, your name will not be displayed on the participants list'}.</p>
+<p><strong><a href="${workerUrl}/confirm-payment?token=${reg.paymentToken}">Click here to confirm your participation</a></strong></p>
 <p>See you at the tournament!<br>DDC European Open 2026 Organizers</p>
 `.trim();
 
