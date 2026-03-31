@@ -55,7 +55,7 @@ async function verifyTurnstile(token: string, secret: string): Promise<boolean> 
 
 function buildConfirmationEmail(reg: Registration, workerUrl: string): { subject: string; html: string } {
   const lines: string[] = [];
-  lines.push(`Registration fee: 150€`);
+  lines.push(`Registration fee: 120€`);
   if (reg.lunchSat) lines.push(`Lunch Saturday July 25th: 15€`);
   if (reg.lunchSun) lines.push(`Lunch Sunday July 26th: 15€`);
   if (reg.court) lines.push(`SweDisc Pro Court: 100€`);
@@ -156,7 +156,7 @@ export default {
       const court = !!body.court;
       const extraDiscs = Math.min(Math.max(parseInt(body.extraDiscs, 10) || 0, 0), 9);
 
-      const totalCost = 150
+      const totalCost = 120
         + (lunchSat ? 15 : 0)
         + (lunchSun ? 15 : 0)
         + (court ? 100 : 0)
