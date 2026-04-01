@@ -1,0 +1,178 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Tournament Shirt Order" contentMaxWidth={640}>
+    <div class="container page-content">
+        <h1>Tournament Shirt Order</h1>
+
+        <div class="card">
+            <h2>DDC European Open 2026</h2>
+            <p class="lead">Order your tournament shirt here. This page is not yet active &mdash; check back later!</p>
+
+            <hr />
+
+            <!-- TODO: Finish this form once shirt supplier info is available -->
+            <fieldset class="form-group" disabled>
+                <legend>Tournament Shirt</legend>
+                <div class="form-group" style="margin-top: 0.25rem;">
+                    <label for="shirt-model">Model</label>
+                    <select id="shirt-model" name="shirtModel">
+                        <option value="">No shirt</option>
+                        <option value="jersey">Jersey (25&euro;)</option>
+                        <option value="polo">Polo shirt (27.50&euro;)</option>
+                    </select>
+                </div>
+                <div id="shirt-options" style="display: none;">
+                    <div class="form-group" style="margin-top: 0.5rem;">
+                        <label for="shirt-size">Size</label>
+                        <select id="shirt-size" name="shirtSize">
+                            <option value="">Select size</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                            <option value="XXXL">XXXL</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-top: 0.5rem;">
+                        <label for="shirt-color">Color</label>
+                        <select id="shirt-color" name="shirtColor">
+                            <option value="">Select color</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-list" style="margin-top: 0.5rem;">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="shirt-name-back" name="shirtNameBack" />
+                            <span>Name printed on the back (+6&euro;)</span>
+                        </label>
+                    </div>
+                    <div id="shirt-name-field" class="form-group" style="margin-top: 0.5rem; display: none;">
+                        <label for="shirt-name-text">Name on back</label>
+                        <input type="text" id="shirt-name-text" name="shirtNameText" placeholder="Name to print on the back" />
+                    </div>
+                </div>
+                <details class="shirt-details">
+                    <summary>More about the tournament shirts</summary>
+                    <div class="shirt-info">
+                        <p>To see more information about the tournament shirts and tips on choosing the right size, see the web pages of our shirt supplier: <a href="https://seurashop.fi/index.php?route=product/product&product_id=3424" target="_blank" rel="noopener">jersey</a> and <a href="https://seurashop.fi/index.php?route=product/product&product_id=3425" target="_blank" rel="noopener">polo shirt</a>.</p>
+                    </div>
+                </details>
+            </fieldset>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .page-content {
+        padding: 4rem var(--spacing-md);
+        max-width: 640px;
+    }
+
+    .card {
+        background: white;
+        padding: 3rem;
+        border-radius: 2px;
+        box-shadow: var(--shadow-sm);
+        border-left: 4px solid var(--color-orange);
+    }
+
+    .lead {
+        font-size: 1.15rem;
+        color: var(--color-text-muted);
+        margin-bottom: 2rem;
+    }
+
+    hr {
+        border: 0;
+        border-top: 1px solid var(--color-border);
+        margin: 2rem 0;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    fieldset.form-group {
+        border: none;
+        padding: 0;
+    }
+
+    label, legend {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--color-text-main);
+    }
+
+    select, input[type="text"] {
+        padding: 0.75rem;
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        font-family: var(--font-body);
+        font-size: 1rem;
+        background: white;
+    }
+
+    .checkbox-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.25rem;
+    }
+
+    .checkbox-label {
+        font-weight: 400;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        cursor: pointer;
+        line-height: 1.5;
+    }
+
+    .checkbox-label input {
+        margin-top: 0.3rem;
+        flex-shrink: 0;
+    }
+
+    .shirt-details {
+        margin-top: 0.5rem;
+    }
+
+    .shirt-details summary {
+        font-size: 0.9rem;
+        color: var(--color-orange);
+        cursor: pointer;
+        font-weight: 600;
+        user-select: none;
+    }
+
+    .shirt-details summary:hover {
+        color: var(--color-orange-deep);
+    }
+
+    .shirt-info {
+        margin-top: 0.75rem;
+        padding: 1rem;
+        background: #faf5f0;
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+    }
+
+    .shirt-info p {
+        font-size: 0.85rem;
+        color: var(--color-text-muted);
+        line-height: 1.6;
+    }
+
+    .shirt-info a {
+        color: var(--color-orange);
+        font-weight: 600;
+    }
+
+    .shirt-info a:hover {
+        color: var(--color-orange-deep);
+    }
+</style>

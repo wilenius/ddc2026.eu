@@ -17,11 +17,6 @@ interface Registration {
   allergies: string;
   court: boolean;
   extraDiscs: number;
-  shirtModel: string;
-  shirtSize: string;
-  shirtColor: string;
-  shirtNameBack: boolean;
-  shirtNameText: string;
   fridayPickup: boolean;
   division: string;
   publishName: boolean;
@@ -65,13 +60,6 @@ function buildConfirmationEmail(reg: Registration, workerUrl: string): { subject
   if (reg.lunchSun) lines.push(`Lunch Sunday July 26th: 15€`);
   if (reg.court) lines.push(`SweDisc Pro Court: 100€`);
   if (reg.extraDiscs > 0) lines.push(`Extra discs × ${reg.extraDiscs}: ${reg.extraDiscs * 10}€`);
-  if (reg.shirtModel) {
-    const shirtPrice = reg.shirtModel === 'jersey' ? 25 : 27.5;
-    const shirtLabel = reg.shirtModel === 'jersey' ? 'Jersey' : 'Polo shirt';
-    lines.push(`${shirtLabel} (${reg.shirtSize}, ${reg.shirtColor}): ${shirtPrice % 1 === 0 ? shirtPrice + '€' : shirtPrice.toFixed(2).replace('.', ',') + '€'}`);
-    if (reg.shirtNameBack) lines.push(`Name on back (${reg.shirtNameText}): 6€`);
-  }
-
   const html = `
 <h2>DDC European Open 2026 — Registration Confirmed</h2>
 <p>Hi ${reg.name},</p>
@@ -95,6 +83,7 @@ ${reg.allergies ? `<p><strong>Allergies/dietary needs:</strong> ${reg.allergies}
 <h3>Confirm your participation</h3>
 <p>By clicking the link below, you'll confirm your participation${reg.publishName ? ', and your name will be displayed on the list of registered players on the <a href="https://ddc2026.eu/participants">tournament website</a>' : '. Since you did not give consent during registration, your name will not be displayed on the participants list'}.</p>
 <p><strong><a href="${workerUrl}/confirm-payment?token=${reg.paymentToken}">Click here to confirm your participation</a></strong></p>
+<p>There will be a separate survey about tournament jerseys, for those who want them. Various colour options will be available too.</p>
 <p>See you at the tournament!<br>DDC European Open 2026 Organizers</p>
 `.trim();
 
@@ -167,20 +156,11 @@ export default {
       const court = !!body.court;
       const extraDiscs = Math.min(Math.max(parseInt(body.extraDiscs, 10) || 0, 0), 9);
 
-      const shirtModel = ["jersey", "polo"].includes(body.shirtModel) ? body.shirtModel : "";
-      const shirtSize = shirtModel ? (body.shirtSize || "").trim().slice(0, 10) : "";
-      const shirtColor = shirtModel ? (body.shirtColor || "").trim().slice(0, 30) : "";
-      const shirtNameBack = !!body.shirtNameBack && !!shirtModel;
-      const shirtNameText = shirtNameBack ? (body.shirtNameText || "").trim().slice(0, 50) : "";
-      const shirtCost = shirtModel === "jersey" ? 25 : shirtModel === "polo" ? 27.5 : 0;
-
       const totalCost = 120
         + (lunchSat ? 15 : 0)
         + (lunchSun ? 15 : 0)
         + (court ? 100 : 0)
-        + extraDiscs * 10
-        + shirtCost
-        + (shirtNameBack ? 6 : 0);
+        + extraDiscs * 10;
 
       const partner = (body.partner || "").trim().slice(0, 200);
       const lookingForPartner = !!body.lookingForPartner && !partner;
@@ -197,11 +177,6 @@ export default {
         allergies: (body.allergies || "").trim().slice(0, 500),
         court,
         extraDiscs,
-        shirtModel,
-        shirtSize,
-        shirtColor,
-        shirtNameBack,
-        shirtNameText,
         fridayPickup: !!body.fridayPickup,
         division: (body.division || "open").toLowerCase(),
         publishName: !!body.publishName,

@@ -109,54 +109,6 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
   </fieldset>
 
   <fieldset class="form-group">
-    <legend>Tournament Shirt <span class="optional">(optional)</span></legend>
-    <div class="form-group" style="margin-top: 0.25rem;">
-      <label for="shirt-model">Model</label>
-      <select id="shirt-model" name="shirtModel">
-        <option value="">No shirt</option>
-        <option value="jersey">Jersey (25&euro;)</option>
-        <option value="polo">Polo shirt (27.50&euro;)</option>
-      </select>
-    </div>
-    <div id="shirt-options" style="display: none;">
-      <div class="form-group" style="margin-top: 0.5rem;">
-        <label for="shirt-size">Size</label>
-        <select id="shirt-size" name="shirtSize">
-          <option value="">Select size</option>
-          <option value="S">S</option>
-          <option value="M">M</option>
-          <option value="L">L</option>
-          <option value="XL">XL</option>
-          <option value="XXL">XXL</option>
-          <option value="XXXL">XXXL</option>
-        </select>
-      </div>
-      <div class="form-group" style="margin-top: 0.5rem;">
-        <label for="shirt-color">Color</label>
-        <select id="shirt-color" name="shirtColor">
-          <option value="">Select color</option>
-        </select>
-      </div>
-      <div class="checkbox-list" style="margin-top: 0.5rem;">
-        <label class="checkbox-label">
-          <input type="checkbox" id="shirt-name-back" name="shirtNameBack" />
-          <span>Name printed on the back (+6&euro;)</span>
-        </label>
-      </div>
-      <div id="shirt-name-field" class="form-group" style="margin-top: 0.5rem; display: none;">
-        <label for="shirt-name-text">Name on back</label>
-        <input type="text" id="shirt-name-text" name="shirtNameText" placeholder="Name to print on the back" />
-      </div>
-    </div>
-    <details class="shirt-details">
-      <summary>More about the tournament shirts</summary>
-      <div class="shirt-info">
-        <p>To see more information about the tournament shirts and tips on choosing the right size, see the web pages of our shirt supplier: <a href="https://seurashop.fi/index.php?route=product/product&product_id=3424" target="_blank" rel="noopener">jersey</a> and <a href="https://seurashop.fi/index.php?route=product/product&product_id=3425" target="_blank" rel="noopener">polo shirt</a>.</p>
-      </div>
-    </details>
-  </fieldset>
-
-  <fieldset class="form-group">
     <legend>Friday Afternoon <span class="optional">(optional)</span></legend>
     <div class="checkbox-list">
       <label class="checkbox-label">
@@ -222,37 +174,6 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
   const LUNCH_FEE = 15;
   const DISC_FEE = 10;
   const COURT_FEE = 100;
-  const SHIRT_PRICES = { jersey: 25, polo: 27.5 };
-  const SHIRT_NAME_FEE = 6;
-
-  const jerseyColors = ["Black", "White", "Orange", "Red", "Royal blue", "Navy"];
-  const poloColors = ["Navy blue", "White", "Sky blue", "Black", "Red", "Maroon"];
-
-  const shirtModelSelect = form.querySelector("#shirt-model");
-  const shirtOptions = document.getElementById("shirt-options");
-  const shirtColorSelect = form.querySelector("#shirt-color");
-  const shirtNameBackCheckbox = form.querySelector("#shirt-name-back");
-  const shirtNameField = document.getElementById("shirt-name-field");
-
-  shirtModelSelect.addEventListener("change", () => {
-    const model = shirtModelSelect.value;
-    shirtOptions.style.display = model ? "block" : "none";
-    shirtColorSelect.innerHTML = '<option value="">Select color</option>';
-    const colors = model === "jersey" ? jerseyColors : model === "polo" ? poloColors : [];
-    colors.forEach(c => {
-      const opt = document.createElement("option");
-      opt.value = c;
-      opt.textContent = c;
-      shirtColorSelect.appendChild(opt);
-    });
-    updateCost();
-  });
-
-  shirtNameBackCheckbox.addEventListener("change", () => {
-    shirtNameField.style.display = shirtNameBackCheckbox.checked ? "flex" : "none";
-    if (!shirtNameBackCheckbox.checked) form.querySelector("#shirt-name-text").value = "";
-    updateCost();
-  });
 
   function formatCost(amount) {
     return amount % 1 === 0 ? amount + "€" : amount.toFixed(2).replace('.', ',') + "€";
@@ -263,9 +184,6 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
     const lunchSun = form.querySelector("#lunch-sun").checked;
     const court = form.querySelector("#court").checked;
     const extraDiscs = parseInt(form.querySelector("#extra-discs").value, 10);
-    const shirtModel = shirtModelSelect.value;
-    const shirtNameBack = shirtNameBackCheckbox.checked && shirtModel;
-
     let lines = [`<div class="cost-line">Registration fee <span>${BASE_FEE}&euro;</span></div>`];
     let total = BASE_FEE;
 
@@ -284,17 +202,6 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
       total += discCost;
       lines.push(`<div class="cost-line">Extra discs &times; ${extraDiscs} <span>${discCost}&euro;</span></div>`);
     }
-    if (shirtModel) {
-      const shirtCost = SHIRT_PRICES[shirtModel];
-      total += shirtCost;
-      const label = shirtModel === "jersey" ? "Jersey" : "Polo shirt";
-      lines.push(`<div class="cost-line">${label} <span>${formatCost(shirtCost)}</span></div>`);
-      if (shirtNameBack) {
-        total += SHIRT_NAME_FEE;
-        lines.push(`<div class="cost-line">Name on back <span>${SHIRT_NAME_FEE}&euro;</span></div>`);
-      }
-    }
-
     lines.push(`<div class="cost-total">Total: <strong>${formatCost(total)}</strong></div>`);
     breakdown.innerHTML = lines.join("");
   }
@@ -303,8 +210,6 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
   form.querySelector("#lunch-sun").addEventListener("change", updateCost);
   form.querySelector("#court").addEventListener("change", updateCost);
   form.querySelector("#extra-discs").addEventListener("change", updateCost);
-  shirtColorSelect.addEventListener("change", updateCost);
-
   // Partner fields: mutually exclusive
   const partnerInput = form.querySelector("#partner");
   const lookingCheckbox = form.querySelector("#looking-for-partner");
@@ -393,21 +298,6 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
       addFieldError(divisionField, "Please select a division.");
     }
 
-    const shirtModelVal = form.querySelector("#shirt-model").value;
-    if (shirtModelVal) {
-      const shirtSizeField = form.querySelector("#shirt-size");
-      if (!shirtSizeField.value) {
-        addFieldError(shirtSizeField, "Please select a size for your shirt.");
-      }
-      const shirtColorField = form.querySelector("#shirt-color");
-      if (!shirtColorField.value) {
-        addFieldError(shirtColorField, "Please select a color for your shirt.");
-      }
-      if (form.querySelector("#shirt-name-back").checked && !form.querySelector("#shirt-name-text").value.trim()) {
-        addFieldError(form.querySelector("#shirt-name-text"), "Please enter the name to print on the back.");
-      }
-    }
-
     const waiver = form.querySelector("#waiver");
     if (!waiver.checked) {
       addFieldError(waiver, "You must agree to the discharge of liability to register.");
@@ -445,11 +335,6 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
       allergies: form.querySelector("#allergies").value.trim(),
       court: form.querySelector("#court").checked,
       extraDiscs: parseInt(form.querySelector("#extra-discs").value, 10),
-      shirtModel: form.querySelector("#shirt-model").value || "",
-      shirtSize: form.querySelector("#shirt-size").value || "",
-      shirtColor: form.querySelector("#shirt-color").value || "",
-      shirtNameBack: form.querySelector("#shirt-name-back").checked && !!form.querySelector("#shirt-model").value,
-      shirtNameText: form.querySelector("#shirt-name-text").value.trim(),
       division: form.querySelector("#division").value,
       fridayPickup: form.querySelector("#friday-pickup").checked,
       publishName: form.querySelector("#publish-name").checked,
@@ -705,46 +590,6 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--color-text-muted);
-  }
-
-  /* Shirt details */
-  .shirt-details {
-    margin-top: 0.5rem;
-  }
-
-  .shirt-details summary {
-    font-size: 0.9rem;
-    color: var(--color-orange);
-    cursor: pointer;
-    font-weight: 600;
-    user-select: none;
-  }
-
-  .shirt-details summary:hover {
-    color: var(--color-orange-deep);
-  }
-
-  .shirt-info {
-    margin-top: 0.75rem;
-    padding: 1rem;
-    background: #faf5f0;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-  }
-
-  .shirt-info p {
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    line-height: 1.6;
-  }
-
-  .shirt-info a {
-    color: var(--color-orange);
-    font-weight: 600;
-  }
-
-  .shirt-info a:hover {
-    color: var(--color-orange-deep);
   }
 
   /* Division details */
