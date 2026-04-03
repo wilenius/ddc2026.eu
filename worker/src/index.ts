@@ -28,6 +28,17 @@ interface Registration {
   paidConfirmedAt: string | null;
 }
 
+interface ShirtOrder {
+  email: string;
+  shirtModel: string;
+  shirtColor: string;
+  shirtSize: string;
+  shirtNameBack: boolean;
+  shirtNameText: string;
+  totalCost: number;
+  orderedAt: string;
+}
+
 function corsHeaders(origin: string): Record<string, string> {
   return {
     "Access-Control-Allow-Origin": origin,
@@ -297,6 +308,113 @@ export default {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders(origin) },
       });
+    }
+
+    if (url.pathname === "/shirt-order" && request.method === "POST") {
+      let body: any;
+      try {
+        body = await request.json();
+      } catch {
+        return jsonResponse({ error: "Invalid JSON" }, 400, origin);
+      }
+
+      // Verify Turnstile
+      const turnstileToken = body["cf-turnstile-response"];
+      if (!turnstileToken || !(await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET))) {
+        return jsonResponse({ error: "CAPTCHA verification failed" }, 403, origin);
+      }
+
+      const email = (body.email || "").trim().toLowerCase();
+      if (!email) {
+        return jsonResponse({ error: "Email is required" }, 400, origin);
+      }
+
+      // Verify the email is registered
+      const existing = await env.REGISTRATIONS.get(`reg:${email}`);
+      if (!existing) {
+        return jsonResponse({ error: "This email is not registered for the tournament. Please use the email you registered with." }, 404, origin);
+      }
+
+      const shirtModel = (body.shirtModel || "").trim();
+      const shirtColor = (body.shirtColor || "").trim();
+      const shirtSize = (body.shirtSize || "").trim();
+
+      if (!shirtModel || !shirtColor || !shirtSize) {
+        return jsonResponse({ error: "Model, color, and size are required" }, 400, origin);
+      }
+
+      const validModels = ["jersey", "polo-mens", "polo-womens"];
+      if (!validModels.includes(shirtModel)) {
+        return jsonResponse({ error: "Invalid shirt model" }, 400, origin);
+      }
+
+      const validSizes = ["S", "M", "L", "XL", "XXL", "XXXL"];
+      if (!validSizes.includes(shirtSize)) {
+        return jsonResponse({ error: "Invalid size" }, 400, origin);
+      }
+
+      const jerseyColors = ["Navy Blue", "Black", "White", "Orange", "Red", "Royal Blue"];
+      const poloColors = ["Navy Blue", "White", "Red", "Royal Blue", "Maroon", "Sky Blue", "Black"];
+      const validColors = shirtModel === "jersey" ? jerseyColors : poloColors;
+      if (!validColors.includes(shirtColor)) {
+        return jsonResponse({ error: "Invalid color for this model" }, 400, origin);
+      }
+
+      const shirtNameBack = !!body.shirtNameBack;
+      const shirtNameText = shirtNameBack ? (body.shirtNameText || "").trim().slice(0, 30) : "";
+      if (shirtNameBack && !shirtNameText) {
+        return jsonResponse({ error: "Name text is required when name-on-back is selected" }, 400, origin);
+      }
+
+      const basePrice = shirtModel === "jersey" ? 25 : 27.50;
+      const totalCost = basePrice + (shirtNameBack ? 6 : 0);
+
+      const order: ShirtOrder = {
+        email,
+        shirtModel,
+        shirtColor,
+        shirtSize,
+        shirtNameBack,
+        shirtNameText,
+        totalCost,
+        orderedAt: new Date().toISOString(),
+      };
+
+      // Append to existing orders array
+      const ordersRaw = await env.REGISTRATIONS.get(`shirt:${email}`);
+      const orders: ShirtOrder[] = ordersRaw ? JSON.parse(ordersRaw) : [];
+      orders.push(order);
+      await env.REGISTRATIONS.put(`shirt:${email}`, JSON.stringify(orders));
+
+      // Update shirt orders index
+      const indexRaw = await env.REGISTRATIONS.get("shirt:_index");
+      const index: string[] = indexRaw ? JSON.parse(indexRaw) : [];
+      if (!index.includes(email)) {
+        index.push(email);
+        await env.REGISTRATIONS.put("shirt:_index", JSON.stringify(index));
+      }
+
+      return jsonResponse({ success: true, message: "Shirt order placed" }, 200, origin);
+    }
+
+    if (url.pathname === "/shirt-orders" && request.method === "GET") {
+      const auth = request.headers.get("Authorization");
+      if (auth !== `Bearer ${env.ADMIN_TOKEN}`) {
+        return jsonResponse({ error: "Unauthorized" }, 401, origin);
+      }
+
+      const indexRaw = await env.REGISTRATIONS.get("shirt:_index");
+      const index: string[] = indexRaw ? JSON.parse(indexRaw) : [];
+
+      const allOrders: ShirtOrder[] = [];
+      for (const email of index) {
+        const raw = await env.REGISTRATIONS.get(`shirt:${email}`);
+        if (!raw) continue;
+        const orders: ShirtOrder[] = JSON.parse(raw);
+        allOrders.push(...orders);
+      }
+
+      return jsonResponse(allOrders, 200, origin);
     }
 
     return jsonResponse({ error: "Not found" }, 404, origin);

@@ -1,32 +1,92 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// Cloudflare test key (always passes) — swap to real key for production
+// Real key: "0x4AAAAAACwTq5FIqepEzPVk"
+const TURNSTILE_SITE_KEY = "0x4AAAAAACwTq5FIqepEzPVk";
+// For local dev: "http://localhost:8787"
+// For production: "https://ddc2026-registration.heikki-wilenius.workers.dev"
+const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
 ---
 
-<Layout title="Tournament Shirt Order" contentMaxWidth={640}>
+<Layout title="Tournament Jersey Order" contentMaxWidth={720}>
     <div class="container page-content">
-        <h1>Tournament Shirt Order</h1>
+        <h1>Tournament Jersey Order</h1>
 
         <div class="card">
             <h2>DDC European Open 2026</h2>
-            <p class="lead">Order your tournament shirt here. This page is not yet active &mdash; check back later!</p>
+            <p class="lead">Order your tournament jersey here. You can place multiple orders &mdash; just submit the form again with a different selection.</p>
 
             <hr />
 
-            <!-- TODO: Finish this form once shirt supplier info is available -->
-            <fieldset class="form-group" disabled>
-                <legend>Tournament Shirt</legend>
-                <div class="form-group" style="margin-top: 0.25rem;">
-                    <label for="shirt-model">Model</label>
-                    <select id="shirt-model" name="shirtModel">
-                        <option value="">No shirt</option>
+            <!-- Model showcase -->
+            <div class="models">
+                <div class="model-card">
+                    <h3>Jersey</h3>
+                    <p class="model-subtitle">Reece Recycled Collection Rise &mdash; 25&euro;</p>
+                    <div class="model-media">
+                        <div class="media-placeholder image-placeholder">
+                            <!-- TODO: Replace with actual image -->
+                            <span>Jersey photo</span>
+                        </div>
+                        <div class="media-placeholder video-placeholder">
+                            <!-- TODO: Replace with YouTube embed, e.g.:
+                            <iframe src="https://www.youtube.com/embed/VIDEO_ID" ...></iframe> -->
+                            <span>Jersey video</span>
+                        </div>
+                    </div>
+                    <p class="model-desc">Tournament competition shirt from recycled materials. The tournament logo is printed small on the chest and large on the back. You can also have your name printed on the back if you like. <strong>The fit is very slim &mdash; order a size up for a looser fit.</strong></p>
+                    <p class="model-colors"><strong>Colors:</strong> Navy Blue, Black, White, Orange, Red, Royal Blue</p>
+                </div>
+
+                <div class="model-card">
+                    <h3>Polo Shirt</h3>
+                    <p class="model-subtitle">Reece Elliot Polo / Sheila Polo Ladies &mdash; 27.50&euro;</p>
+                    <div class="model-media">
+                        <div class="media-placeholder image-placeholder">
+                            <!-- TODO: Replace with actual image -->
+                            <span>Polo photo</span>
+                        </div>
+                        <div class="media-placeholder video-placeholder">
+                            <!-- TODO: Replace with YouTube embed -->
+                            <span>Polo video</span>
+                        </div>
+                    </div>
+                    <p class="model-desc">This airy polo shirt is made of 100% recycled material. The tournament logo is printed small on the chest and large on the back. You can also have your name printed on the back if you like. Available in men's (Elliot) and women's (Sheila) cuts.</p>
+                    <p class="model-colors"><strong>Colors:</strong> Navy Blue, White, Red, Royal Blue, Maroon, Sky Blue, Black</p>
+                </div>
+            </div>
+
+            <hr />
+
+            <form id="shirt-order-form" novalidate>
+                <div class="form-group">
+                    <label for="email">Email <span class="required">*</span></label>
+                    <p class="field-hint">Use the same email address you registered with.</p>
+                    <input type="email" id="email" name="email" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="shirt-model">Model <span class="required">*</span></label>
+                    <select id="shirt-model" name="shirtModel" required>
+                        <option value="">Select a model</option>
                         <option value="jersey">Jersey (25&euro;)</option>
-                        <option value="polo">Polo shirt (27.50&euro;)</option>
+                        <option value="polo-mens">Polo &mdash; Men's / Elliot (27.50&euro;)</option>
+                        <option value="polo-womens">Polo &mdash; Women's / Sheila (27.50&euro;)</option>
                     </select>
                 </div>
+
                 <div id="shirt-options" style="display: none;">
-                    <div class="form-group" style="margin-top: 0.5rem;">
-                        <label for="shirt-size">Size</label>
-                        <select id="shirt-size" name="shirtSize">
+                    <div class="form-group">
+                        <label for="shirt-color">Color <span class="required">*</span></label>
+                        <select id="shirt-color" name="shirtColor" required>
+                            <option value="">Select color</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shirt-size">Size <span class="required">*</span></label>
+                        <select id="shirt-size" name="shirtSize" required>
                             <option value="">Select size</option>
                             <option value="S">S</option>
                             <option value="M">M</option>
@@ -36,38 +96,261 @@ import Layout from '../layouts/Layout.astro';
                             <option value="XXXL">XXXL</option>
                         </select>
                     </div>
-                    <div class="form-group" style="margin-top: 0.5rem;">
-                        <label for="shirt-color">Color</label>
-                        <select id="shirt-color" name="shirtColor">
-                            <option value="">Select color</option>
-                        </select>
-                    </div>
-                    <div class="checkbox-list" style="margin-top: 0.5rem;">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="shirt-name-back" name="shirtNameBack" />
-                            <span>Name printed on the back (+6&euro;)</span>
-                        </label>
-                    </div>
-                    <div id="shirt-name-field" class="form-group" style="margin-top: 0.5rem; display: none;">
-                        <label for="shirt-name-text">Name on back</label>
-                        <input type="text" id="shirt-name-text" name="shirtNameText" placeholder="Name to print on the back" />
+
+                    <fieldset class="form-group">
+                        <legend>Name on back <span class="optional">(optional, +6&euro;)</span></legend>
+                        <div class="checkbox-list">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="shirt-name-back" name="shirtNameBack" />
+                                <span>I want my name printed on the back</span>
+                            </label>
+                        </div>
+                        <div id="shirt-name-field" class="form-group" style="margin-top: 0.5rem; display: none;">
+                            <label for="shirt-name-text">Name to print</label>
+                            <input type="text" id="shirt-name-text" name="shirtNameText" maxlength="30" placeholder="e.g. SMITH" />
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-theme="light"></div>
+
+                <div id="form-message" class="form-message" hidden></div>
+
+                <div class="submit-row">
+                    <button type="submit" class="btn submit-btn">Place Order</button>
+                    <div id="cost-breakdown" class="cost-breakdown">
+                        <div class="cost-total">Select a model to see the price</div>
                     </div>
                 </div>
-                <details class="shirt-details">
-                    <summary>More about the tournament shirts</summary>
-                    <div class="shirt-info">
-                        <p>To see more information about the tournament shirts and tips on choosing the right size, see the web pages of our shirt supplier: <a href="https://seurashop.fi/index.php?route=product/product&product_id=3424" target="_blank" rel="noopener">jersey</a> and <a href="https://seurashop.fi/index.php?route=product/product&product_id=3425" target="_blank" rel="noopener">polo shirt</a>.</p>
-                    </div>
-                </details>
-            </fieldset>
+            </form>
+
+            <div id="confirmation" class="confirmation" hidden>
+                <div id="order-summary" class="order-summary"></div>
+                <h2>Order Placed</h2>
+                <p>Your jersey order has been recorded. The cost will be included in your tournament invoice.</p>
+                <p style="margin-top: 1rem;"><button class="btn btn-outline" id="order-another">Place another order</button></p>
+            </div>
         </div>
     </div>
 </Layout>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<script define:vars={{ WORKER_URL }}>
+    const form = document.getElementById("shirt-order-form");
+    const message = document.getElementById("form-message");
+    const confirmation = document.getElementById("confirmation");
+    const breakdown = document.getElementById("cost-breakdown");
+    const shirtOptions = document.getElementById("shirt-options");
+    const modelSelect = document.getElementById("shirt-model");
+    const colorSelect = document.getElementById("shirt-color");
+    const sizeSelect = document.getElementById("shirt-size");
+    const nameBackCheckbox = document.getElementById("shirt-name-back");
+    const nameField = document.getElementById("shirt-name-field");
+    const nameText = document.getElementById("shirt-name-text");
+
+    const JERSEY_PRICE = 25;
+    const POLO_PRICE = 27.50;
+    const NAME_PRICE = 6;
+
+    const JERSEY_COLORS = ["Navy Blue", "Black", "White", "Orange", "Red", "Royal Blue"];
+    const POLO_COLORS = ["Navy Blue", "White", "Red", "Royal Blue", "Maroon", "Sky Blue", "Black"];
+
+    function getPrice() {
+        const model = modelSelect.value;
+        if (!model) return 0;
+        return model === "jersey" ? JERSEY_PRICE : POLO_PRICE;
+    }
+
+    function formatCost(amount) {
+        return amount % 1 === 0 ? amount + "€" : amount.toFixed(2).replace('.', ',') + "€";
+    }
+
+    function updateColors() {
+        const model = modelSelect.value;
+        const colors = model === "jersey" ? JERSEY_COLORS : POLO_COLORS;
+        colorSelect.innerHTML = '<option value="">Select color</option>';
+        colors.forEach(c => {
+            const opt = document.createElement("option");
+            opt.value = c;
+            opt.textContent = c;
+            colorSelect.appendChild(opt);
+        });
+    }
+
+    function updateCost() {
+        const model = modelSelect.value;
+        if (!model) {
+            breakdown.innerHTML = '<div class="cost-total">Select a model to see the price</div>';
+            return;
+        }
+        const base = getPrice();
+        const nameBack = nameBackCheckbox.checked;
+        let lines = [];
+        const modelLabel = model === "jersey" ? "Jersey" : model === "polo-mens" ? "Polo (Men's)" : "Polo (Women's)";
+        lines.push(`<div class="cost-line">${modelLabel} <span>${formatCost(base)}</span></div>`);
+        let total = base;
+        if (nameBack) {
+            total += NAME_PRICE;
+            lines.push(`<div class="cost-line">Name on back <span>${NAME_PRICE}€</span></div>`);
+        }
+        lines.push(`<div class="cost-total">Total: <strong>${formatCost(total)}</strong></div>`);
+        breakdown.innerHTML = lines.join("");
+    }
+
+    modelSelect.addEventListener("change", () => {
+        if (modelSelect.value) {
+            shirtOptions.style.display = "flex";
+            updateColors();
+        } else {
+            shirtOptions.style.display = "none";
+        }
+        updateCost();
+    });
+
+    nameBackCheckbox.addEventListener("change", () => {
+        nameField.style.display = nameBackCheckbox.checked ? "flex" : "none";
+        if (!nameBackCheckbox.checked) nameText.value = "";
+        updateCost();
+    });
+
+    // Clear field error on interaction
+    form.addEventListener("input", (e) => {
+        const field = e.target;
+        if (field.classList.contains("input-error")) {
+            field.classList.remove("input-error");
+            const err = field.nextElementSibling;
+            if (err && err.classList.contains("field-error")) err.remove();
+        }
+    });
+    form.addEventListener("change", (e) => {
+        const field = e.target;
+        if (field.classList.contains("input-error")) {
+            field.classList.remove("input-error");
+            const err = field.nextElementSibling;
+            if (err && err.classList.contains("field-error")) err.remove();
+        }
+    });
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        form.querySelectorAll(".field-error").forEach(el => el.remove());
+        form.querySelectorAll(".input-error").forEach(el => el.classList.remove("input-error"));
+
+        let firstError = null;
+
+        function addFieldError(field, msg) {
+            field.classList.add("input-error");
+            const err = document.createElement("span");
+            err.className = "field-error";
+            err.textContent = msg;
+            field.insertAdjacentElement("afterend", err);
+            if (!firstError) firstError = field;
+        }
+
+        const emailField = form.querySelector("#email");
+        if (!emailField.value.trim()) {
+            addFieldError(emailField, "Please enter your email address.");
+        } else if (!emailField.validity.valid) {
+            addFieldError(emailField, "Please enter a valid email address.");
+        }
+
+        if (!modelSelect.value) {
+            addFieldError(modelSelect, "Please select a model.");
+        }
+
+        if (modelSelect.value && !colorSelect.value) {
+            addFieldError(colorSelect, "Please select a color.");
+        }
+
+        if (modelSelect.value && !sizeSelect.value) {
+            addFieldError(sizeSelect, "Please select a size.");
+        }
+
+        if (nameBackCheckbox.checked && !nameText.value.trim()) {
+            addFieldError(nameText, "Please enter the name to print.");
+        }
+
+        const turnstileInput = form.querySelector('[name="cf-turnstile-response"]');
+        const turnstileToken = turnstileInput ? turnstileInput.value : "";
+        if (!turnstileToken) {
+            const turnstileWidget = form.querySelector(".cf-turnstile");
+            if (!firstError) firstError = turnstileWidget;
+            const err = document.createElement("span");
+            err.className = "field-error";
+            err.textContent = "Please complete the CAPTCHA verification.";
+            turnstileWidget.insertAdjacentElement("afterend", err);
+        }
+
+        if (firstError) {
+            firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+            if (firstError.focus) firstError.focus();
+            return;
+        }
+
+        const submitBtn = form.querySelector(".submit-btn");
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Submitting...";
+        message.hidden = true;
+
+        const data = {
+            email: emailField.value.trim(),
+            shirtModel: modelSelect.value,
+            shirtColor: colorSelect.value,
+            shirtSize: sizeSelect.value,
+            shirtNameBack: nameBackCheckbox.checked,
+            shirtNameText: nameBackCheckbox.checked ? nameText.value.trim() : "",
+            "cf-turnstile-response": turnstileToken,
+        };
+
+        try {
+            const res = await fetch(WORKER_URL + "/shirt-order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+
+            if (res.ok) {
+                document.getElementById("order-summary").innerHTML = breakdown.innerHTML;
+                form.hidden = true;
+                confirmation.hidden = false;
+            } else {
+                const body = await res.json().catch(() => ({}));
+                showMessage(body.error || "Order failed. Please try again.", true);
+                // Reset Turnstile for retry
+                if (window.turnstile) window.turnstile.reset();
+            }
+        } catch {
+            showMessage("Network error. Please check your connection and try again.", true);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Place Order";
+        }
+    });
+
+    function showMessage(text, isError) {
+        message.textContent = text;
+        message.hidden = false;
+        message.className = "form-message " + (isError ? "error" : "success");
+    }
+
+    // "Place another order" button
+    document.getElementById("order-another").addEventListener("click", () => {
+        confirmation.hidden = true;
+        form.hidden = false;
+        form.reset();
+        shirtOptions.style.display = "none";
+        nameField.style.display = "none";
+        updateCost();
+        if (window.turnstile) window.turnstile.reset();
+    });
+</script>
+
 <style>
     .page-content {
         padding: 4rem var(--spacing-md);
-        max-width: 640px;
+        max-width: 720px;
     }
 
     .card {
@@ -90,6 +373,92 @@ import Layout from '../layouts/Layout.astro';
         margin: 2rem 0;
     }
 
+    /* Model showcase */
+    .models {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .model-card {
+        background: #faf5f0;
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        padding: 1.5rem;
+    }
+
+    .model-card h3 {
+        margin-bottom: 0.25rem;
+        font-size: 1.6rem;
+    }
+
+    .model-subtitle {
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+        margin-bottom: 1rem;
+    }
+
+    .model-media {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 520px) {
+        .model-media {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .media-placeholder {
+        background: #e8ddd0;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-muted);
+        font-size: 0.85rem;
+        font-style: italic;
+    }
+
+    .image-placeholder {
+        aspect-ratio: 4 / 3;
+    }
+
+    .video-placeholder {
+        aspect-ratio: 16 / 9;
+    }
+
+    .model-desc {
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+    }
+
+    .model-colors {
+        font-size: 0.85rem;
+        color: var(--color-text-muted);
+    }
+
+    /* Form */
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    form[hidden] {
+        display: none;
+    }
+
+    #shirt-options {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
     .form-group {
         display: flex;
         flex-direction: column;
@@ -107,13 +476,40 @@ import Layout from '../layouts/Layout.astro';
         color: var(--color-text-main);
     }
 
-    select, input[type="text"] {
+    .required {
+        color: var(--color-orange);
+    }
+
+    .optional {
+        font-weight: 400;
+        color: var(--color-text-muted);
+        font-size: 0.85rem;
+    }
+
+    .field-hint {
+        font-size: 0.85rem;
+        color: var(--color-text-muted);
+        margin: 0;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select {
         padding: 0.75rem;
         border: 1px solid var(--color-border);
         border-radius: 4px;
         font-family: var(--font-body);
         font-size: 1rem;
         background: white;
+        transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    select:focus {
+        outline: none;
+        border-color: var(--color-orange);
+        box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.15);
     }
 
     .checkbox-list {
@@ -137,42 +533,120 @@ import Layout from '../layouts/Layout.astro';
         flex-shrink: 0;
     }
 
-    .shirt-details {
+    .cf-turnstile {
         margin-top: 0.5rem;
     }
 
-    .shirt-details summary {
-        font-size: 0.9rem;
-        color: var(--color-orange);
+    .submit-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 2rem;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .submit-btn {
         cursor: pointer;
-        font-weight: 600;
-        user-select: none;
+        flex-shrink: 0;
     }
 
-    .shirt-details summary:hover {
-        color: var(--color-orange-deep);
+    .submit-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
     }
 
-    .shirt-info {
-        margin-top: 0.75rem;
-        padding: 1rem;
+    .cost-breakdown {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        font-size: 0.95rem;
+        min-width: 200px;
+    }
+
+    .cost-line {
+        display: flex;
+        justify-content: space-between;
+        color: var(--color-text-muted);
+    }
+
+    .cost-total {
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid var(--color-border);
+        padding-top: 0.35rem;
+        margin-top: 0.25rem;
+        font-size: 1.1rem;
+        color: var(--color-text-main);
+    }
+
+    .input-error {
+        border-color: #dc2626 !important;
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15) !important;
+    }
+
+    .field-error {
+        color: #991b1b;
+        font-size: 0.85rem;
+        margin-top: 0.15rem;
+    }
+
+    .form-message {
+        padding: 0.875rem 1rem;
+        border-radius: 4px;
+        font-size: 0.95rem;
+    }
+
+    .form-message.error {
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .form-message.success {
+        background: #f0fdf4;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+    }
+
+    .order-summary {
         background: #faf5f0;
         border: 1px solid var(--color-border);
+        border-left: 4px solid var(--color-orange);
         border-radius: 4px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        font-size: 0.95rem;
+        min-width: 200px;
+        max-width: 360px;
     }
 
-    .shirt-info p {
-        font-size: 0.85rem;
+    .order-summary .cost-total {
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid var(--color-border);
+        padding-top: 0.35rem;
+        margin-top: 0.25rem;
+        font-size: 1.1rem;
+        color: var(--color-text-main);
+    }
+
+    .order-summary .cost-line {
+        display: flex;
+        justify-content: space-between;
         color: var(--color-text-muted);
-        line-height: 1.6;
     }
 
-    .shirt-info a {
+    .confirmation h2 {
         color: var(--color-orange);
-        font-weight: 600;
     }
 
-    .shirt-info a:hover {
-        color: var(--color-orange-deep);
+    .confirmation p {
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
     }
 </style>
