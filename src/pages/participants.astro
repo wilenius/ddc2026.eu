@@ -12,6 +12,9 @@ import Layout from '../layouts/Layout.astro';
                 <div id="participants-list">
                     <p class="loading">Loading participants…</p>
                 </div>
+                <div class="participants-note">
+                    <p>Don't see your name on the list even though you signed up? You need to confirm your participation by clicking the link in the confirmation email. Check your spam folder if you don't find it.</p>
+                </div>
             </section>
 
             <section>
@@ -32,7 +35,7 @@ import Layout from '../layouts/Layout.astro';
 
             <section>
                 <h2>Travel</h2>
-                <p>We recommend using public transportation to reach the tournament venue. Here's a <a href="https://reittiopas.hsl.fi/reitti/-/Purotie%208%2C%20it%C3%A4inen%2C%20Helsinki%3A%3A60.215522%2C24.868068?arriveBy=false&locale=en&time=1774604769.525" target="_blank" rel="noopener">pre-filled journey planner link</a> for checking travel times.</p>
+                <p>We recommend using public transportation to reach the tournament venue. Here's a <a href="https://reittiopas.hsl.fi/reitti/-/Purotie%208%2C%20it%C3%A4inen%2C%20Helsinki%3A%3A60.215522%2C24.868068?arriveBy=false&locale=en" target="_blank" rel="noopener">pre-filled journey planner link</a> for checking travel times.</p>
             </section>
         </div>
     </div>
@@ -150,6 +153,21 @@ import Layout from '../layouts/Layout.astro';
         color: var(--color-text-muted);
         padding: 0.1rem 0.5rem;
         border-radius: 3px;
+    }
+
+    .participants-note {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: #faf5f0;
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+    }
+
+    .participants-note p {
+        font-size: 0.85rem;
+        color: var(--color-text-muted);
+        line-height: 1.6;
+        margin: 0;
     }
 
     .loading {
