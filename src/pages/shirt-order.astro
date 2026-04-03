@@ -25,15 +25,7 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
                     <h3>Jersey</h3>
                     <p class="model-subtitle">Reece Recycled Collection Rise &mdash; 25&euro;</p>
                     <div class="model-media">
-                        <div class="media-placeholder image-placeholder">
-                            <!-- TODO: Replace with actual image -->
-                            <span>Jersey photo</span>
-                        </div>
-                        <div class="media-placeholder video-placeholder">
-                            <!-- TODO: Replace with YouTube embed, e.g.:
-                            <iframe src="https://www.youtube.com/embed/VIDEO_ID" ...></iframe> -->
-                            <span>Jersey video</span>
-                        </div>
+                        <img src="/rise.jpg" alt="DDC European Open 2026 Jersey — available colors" class="model-image" />
                     </div>
                     <p class="model-desc">Tournament competition shirt from recycled materials. The tournament logo is printed small on the chest and large on the back. You can also have your name printed on the back if you like. <strong>The fit is very slim &mdash; order a size up for a looser fit.</strong></p>
                     <p class="model-colors"><strong>Colors:</strong> Navy Blue, Black, White, Orange, Red, Royal Blue</p>
@@ -42,15 +34,9 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
                 <div class="model-card">
                     <h3>Polo Shirt</h3>
                     <p class="model-subtitle">Reece Elliot Polo / Sheila Polo Ladies &mdash; 27.50&euro;</p>
-                    <div class="model-media">
-                        <div class="media-placeholder image-placeholder">
-                            <!-- TODO: Replace with actual image -->
-                            <span>Polo photo</span>
-                        </div>
-                        <div class="media-placeholder video-placeholder">
-                            <!-- TODO: Replace with YouTube embed -->
-                            <span>Polo video</span>
-                        </div>
+                    <div class="model-media model-media-polo">
+                        <img src="/polo-elliot.jpg" alt="Reece Elliot Polo — Men's cut" class="model-image" />
+                        <img src="/polo-sheila.jpg" alt="Reece Sheila Polo Ladies — Women's cut" class="model-image" />
                     </div>
                     <p class="model-desc">This airy polo shirt is made of 100% recycled material. The tournament logo is printed small on the chest and large on the back. You can also have your name printed on the back if you like. Available in men's (Elliot) and women's (Sheila) cuts.</p>
                     <p class="model-colors"><strong>Colors:</strong> Navy Blue, White, Red, Royal Blue, Maroon, Sky Blue, Black</p>
@@ -399,35 +385,25 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
     }
 
     .model-media {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
         margin-bottom: 1rem;
     }
 
+    .model-image {
+        border-radius: 4px;
+        max-width: 100%;
+        height: auto;
+    }
+
+    .model-media-polo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
     @media (max-width: 520px) {
-        .model-media {
+        .model-media-polo {
             grid-template-columns: 1fr;
         }
-    }
-
-    .media-placeholder {
-        background: #e8ddd0;
-        border-radius: 4px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--color-text-muted);
-        font-size: 0.85rem;
-        font-style: italic;
-    }
-
-    .image-placeholder {
-        aspect-ratio: 4 / 3;
-    }
-
-    .video-placeholder {
-        aspect-ratio: 16 / 9;
     }
 
     .model-desc {
