@@ -30,7 +30,11 @@ import Layout from '../layouts/Layout.astro';
 
             <section>
                 <h2>Accommodation</h2>
-                <p>Participants can get a 10% discount for all Forenom Hostels and Aparthotels in the greater Helsinki area between 24th and 27th July. The <a href="https://www.forenom.com/fi/hostellit/helsinki/forenom-hostel-helsinki-pitajanmaki/145/" target="_blank" rel="noopener">nearest one</a> is a five-minute walk from the tournament location. The discount code is in your registration email.</p>
+                <p>We have partnered with two accommodation providers to offer discounted stays for tournament participants. Discount codes are in your registration confirmation email.</p>
+                <ul class="accommodation-list">
+                    <li><strong><a href="https://www.forenom.com" target="_blank" rel="noopener">Forenom</a></strong> — 10% discount for all Forenom Hostels and Aparthotels in the greater Helsinki area, July 24–27. The <a href="https://www.forenom.com/fi/hostellit/helsinki/forenom-hostel-helsinki-pitajanmaki/145/" target="_blank" rel="noopener">nearest one</a> is a five-minute walk from the tournament venue.</li>
+                    <li><strong><a href="https://www.cheapsleep.fi/" target="_blank" rel="noopener">CheapSleep Helsinki</a></strong> — 20% discount on dormitory and private rooms, July 22–30. A more central option, about 40 minutes by public transport to the venue.</li>
+                </ul>
             </section>
 
             <section>
@@ -168,6 +172,25 @@ import Layout from '../layouts/Layout.astro';
         color: var(--color-text-muted);
         line-height: 1.6;
         margin: 0;
+    }
+
+    .accommodation-list {
+        list-style: none;
+        padding: 0;
+        margin: 1.25rem 0 0;
+    }
+
+    .accommodation-list li {
+        margin-bottom: 1rem;
+        padding: 0.75rem 1rem;
+        background: #faf5f0;
+        border-left: 3px solid var(--color-orange);
+        border-radius: 2px;
+        line-height: 1.6;
+    }
+
+    .accommodation-list li:last-child {
+        margin-bottom: 0;
     }
 
     .loading {

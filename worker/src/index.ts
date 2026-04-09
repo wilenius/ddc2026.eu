@@ -94,8 +94,9 @@ ${reg.allergies ? `<p><strong>Allergies/dietary needs:</strong> ${reg.allergies}
 <h3>Confirm your participation</h3>
 <p>By clicking the link below, you'll confirm your participation${reg.publishName ? ', and your name will be displayed on the list of registered players on the <a href="https://ddc2026.eu/participants">tournament website</a>' : '. Since you did not give consent during registration, your name will not be displayed on the participants list'}.</p>
 <p><strong><a href="${workerUrl}/confirm-payment?token=${reg.paymentToken}">Click here to confirm your participation</a></strong></p>
-<h3>Accommodation discount</h3>
-<p>Participants get a 10% discount for all <a href="https://www.forenom.com">Forenom</a> Hostels and Aparthotels in the greater Helsinki area between 24th and 27th July. The <a href="https://www.forenom.com/fi/hostellit/helsinki/forenom-hostel-helsinki-pitajanmaki/145/">nearest one</a> is a five-minute walk from the tournament location. Use the discount code <strong>DDC2026</strong> when booking.</p>
+<h3>Accommodation discounts</h3>
+<p><strong><a href="https://www.forenom.com">Forenom</a></strong> — 10% discount for all Forenom Hostels and Aparthotels in the greater Helsinki area, July 24–27. The <a href="https://www.forenom.com/fi/hostellit/helsinki/forenom-hostel-helsinki-pitajanmaki/145/">nearest one</a> is a five-minute walk from the tournament venue. Use the discount code <strong>DDC2026</strong> when booking.</p>
+<p><strong><a href="https://www.cheapsleep.fi/">CheapSleep Helsinki</a></strong> — 20% discount on dormitory and private rooms, July 22–30. A more central option, about 40 minutes by public transport to the venue. Use the promo code <strong>DDC2026</strong> when booking.</p>
 <p>There will be a separate survey about tournament jerseys, for those who want them. Various colour options will be available too.</p>
 <p>See you at the tournament!<br>DDC European Open 2026 Organizers</p>
 `.trim();
