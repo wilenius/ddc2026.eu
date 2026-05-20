@@ -128,6 +128,14 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
     </div>
   </fieldset>
 
+  <div class="form-group">
+    <label for="discount-code">Discount Code <span class="optional">(optional)</span></label>
+    <div class="discount-row">
+      <input type="text" id="discount-code" name="discountCode" placeholder="Enter discount code" autocomplete="off" spellcheck="false" />
+      <span id="discount-status" class="discount-status" hidden></span>
+    </div>
+  </div>
+
   <fieldset class="form-group liability-section">
     <legend>Discharge of Liability <span class="required">*</span></legend>
     <div class="liability-text">
@@ -171,6 +179,8 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
   const breakdown = document.getElementById("cost-breakdown");
 
   const BASE_FEE = 120;
+  const DISCOUNTED_FEE = 60;
+  const DISCOUNT_CODE = "roniviktor";
   const LUNCH_FEE = 15;
   const DISC_FEE = 10;
   const COURT_FEE = 100;
@@ -179,13 +189,43 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
     return amount % 1 === 0 ? amount + "€" : amount.toFixed(2).replace('.', ',') + "€";
   }
 
+  function isDiscountValid() {
+    const code = form.querySelector("#discount-code").value.trim().toLowerCase();
+    return code === DISCOUNT_CODE;
+  }
+
+  function updateDiscountStatus() {
+    const input = form.querySelector("#discount-code");
+    const status = document.getElementById("discount-status");
+    const raw = input.value.trim();
+    if (!raw) {
+      status.hidden = true;
+      return;
+    }
+    if (raw.toLowerCase() === DISCOUNT_CODE) {
+      status.textContent = "Discount applied: registration fee reduced to 60€";
+      status.className = "discount-status discount-valid";
+    } else {
+      status.textContent = "Invalid discount code";
+      status.className = "discount-status discount-invalid";
+    }
+    status.hidden = false;
+  }
+
   function updateCost() {
     const lunchSat = form.querySelector("#lunch-sat").checked;
     const lunchSun = form.querySelector("#lunch-sun").checked;
     const court = form.querySelector("#court").checked;
     const extraDiscs = parseInt(form.querySelector("#extra-discs").value, 10);
-    let lines = [`<div class="cost-line">Registration fee <span>${BASE_FEE}&euro;</span></div>`];
-    let total = BASE_FEE;
+    const discounted = isDiscountValid();
+    const regFee = discounted ? DISCOUNTED_FEE : BASE_FEE;
+
+    let lines = [`<div class="cost-line">Registration fee <span>${regFee}&euro;</span></div>`];
+    let total = regFee;
+
+    if (discounted) {
+      lines.push(`<div class="cost-line discount-line">Discount (roniviktor) <span>&minus;${BASE_FEE - DISCOUNTED_FEE}&euro;</span></div>`);
+    }
 
     const lunchCount = (lunchSat ? 1 : 0) + (lunchSun ? 1 : 0);
     if (lunchCount > 0) {
@@ -210,6 +250,7 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
   form.querySelector("#lunch-sun").addEventListener("change", updateCost);
   form.querySelector("#court").addEventListener("change", updateCost);
   form.querySelector("#extra-discs").addEventListener("change", updateCost);
+  form.querySelector("#discount-code").addEventListener("input", () => { updateDiscountStatus(); updateCost(); });
   // Partner fields: mutually exclusive
   const partnerInput = form.querySelector("#partner");
   const lookingCheckbox = form.querySelector("#looking-for-partner");
@@ -338,6 +379,7 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
       division: form.querySelector("#division").value,
       fridayPickup: form.querySelector("#friday-pickup").checked,
       publishName: form.querySelector("#publish-name").checked,
+      discountCode: form.querySelector("#discount-code").value.trim(),
       waiver: true,
       "cf-turnstile-response": turnstileToken,
     };
@@ -689,6 +731,28 @@ const WORKER_URL = "https://ddc2026-registration.heikki-wilenius.workers.dev";
 
   .liability-text p + p {
     margin-top: 0.75rem;
+  }
+
+  .discount-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .discount-status {
+    font-size: 0.85rem;
+  }
+
+  .discount-valid {
+    color: #166534;
+  }
+
+  .discount-invalid {
+    color: #991b1b;
+  }
+
+  .cost-line.discount-line {
+    color: #166534;
   }
 
   .confirmation h2 {

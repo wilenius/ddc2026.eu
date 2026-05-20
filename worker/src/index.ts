@@ -20,6 +20,7 @@ interface Registration {
   fridayPickup: boolean;
   division: string;
   publishName: boolean;
+  discountCode: string;
   totalCost: number;
   waiver: boolean;
   registeredAt: string;
@@ -66,7 +67,9 @@ async function verifyTurnstile(token: string, secret: string): Promise<boolean> 
 
 function buildConfirmationEmail(reg: Registration, workerUrl: string): { subject: string; html: string } {
   const lines: string[] = [];
-  lines.push(`Registration fee: 120€`);
+  const regFee = reg.discountCode === "roniviktor" ? 60 : 120;
+  lines.push(`Registration fee: ${regFee}€`);
+  if (reg.discountCode === "roniviktor") lines.push(`Discount (${reg.discountCode}): -60€`);
   if (reg.lunchSat) lines.push(`Lunch Saturday July 25th: 15€`);
   if (reg.lunchSun) lines.push(`Lunch Sunday July 26th: 15€`);
   if (reg.court) lines.push(`SweDisc Pro Court: 100€`);
@@ -169,8 +172,11 @@ export default {
       const lunchSun = !!body.lunchSun;
       const court = !!body.court;
       const extraDiscs = Math.min(Math.max(parseInt(body.extraDiscs, 10) || 0, 0), 9);
+      const discountCode = (body.discountCode || "").trim().toLowerCase();
+      const discountApplied = discountCode === "roniviktor";
+      const regFee = discountApplied ? 60 : 120;
 
-      const totalCost = 120
+      const totalCost = regFee
         + (lunchSat ? 15 : 0)
         + (lunchSun ? 15 : 0)
         + (court ? 100 : 0)
@@ -194,6 +200,7 @@ export default {
         fridayPickup: !!body.fridayPickup,
         division: (body.division || "open").toLowerCase(),
         publishName: !!body.publishName,
+        discountCode: discountApplied ? discountCode : "",
         totalCost,
         waiver: true,
         registeredAt: new Date().toISOString(),
