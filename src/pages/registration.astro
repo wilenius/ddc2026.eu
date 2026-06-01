@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import RegistrationForm from '../components/RegistrationForm.astro';
 ---
 
 <Layout title="Registration" contentMaxWidth={640}>
@@ -9,18 +8,10 @@ import RegistrationForm from '../components/RegistrationForm.astro';
 
         <div class="card">
             <h2>DDC European Open 2026</h2>
-            <p class="lead">Register below to secure your spot. The registration period is between April 1st and May 28th.</p>
-
-            <hr />
-
-            <!--<p class="not-open">Registration is not yet open.</p>-->
-
-            <RegistrationForm />
+            <p class="closed">Registration has been closed.</p>
         </div>
     </div>
 </Layout>
-
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <style>
     .page-content {
@@ -36,19 +27,7 @@ import RegistrationForm from '../components/RegistrationForm.astro';
         border-left: 4px solid var(--color-orange);
     }
 
-    .lead {
-        font-size: 1.15rem;
-        color: var(--color-text-muted);
-        margin-bottom: 2rem;
-    }
-
-    hr {
-        border: 0;
-        border-top: 1px solid var(--color-border);
-        margin: 2rem 0;
-    }
-
-    .not-open {
+    .closed {
         font-size: 1.15rem;
         color: var(--color-text-muted);
     }
