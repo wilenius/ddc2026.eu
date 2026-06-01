@@ -20,6 +20,15 @@ import Layout from '../layouts/Layout.astro';
 	<section class="container news-section">
 		<h2>Latest News</h2>
 		<div class="news-grid">
+			<article class="news-card">
+				<div class="news-date">June 1, 2026</div>
+				<h3>Registration closed</h3>
+				<figure class="news-figure">
+					<img src="/tali.jpg" alt="Tali fields" class="news-img" />
+					<figcaption>Tali fields are ready for the tournament.</figcaption>
+				</figure>
+				<p>The tournament registration has now been closed. We have 20 pairs from all over Europe and the United States. Stay tuned for more information!</p>
+			</article>
 			<!--
 			<article class="news-card">
 				<div class="news-date">March 31, 2026</div>
@@ -208,6 +217,24 @@ import Layout from '../layouts/Layout.astro';
 	.news-card p {
 		color: var(--color-text-muted);
 		line-height: 1.7;
+	}
+
+	.news-figure {
+		margin: 1rem -2rem 1.25rem;
+	}
+
+	.news-img {
+		width: 100%;
+		display: block;
+		object-fit: cover;
+		max-height: 220px;
+	}
+
+	.news-figure figcaption {
+		font-size: 0.78rem;
+		color: var(--color-text-muted);
+		padding: 0.4rem 2rem 0;
+		font-style: italic;
 	}
 
 	@media (max-width: 768px) {
