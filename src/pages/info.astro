@@ -2,44 +2,104 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Tournament Info" contentMaxWidth={1200}>
+<Layout title="Spectator Info" contentMaxWidth={900}>
     <div class="container page-content">
-        <h1>Tournament Information</h1>
-        
-        <div class="info-grid">
-            <section class="info-section">
-                <h2>Dates & Location</h2>
-                <div class="info-card">
-                    <div class="icon-text">
-                        <span class="label">When</span>
-                        <span class="value">July 25–26, 2026</span>
-                    </div>
-                    <div class="icon-text">
-                        <span class="label">Where</span>
-                        <span class="value">Tali Sports Park<br>Helsinki, Finland</span>
-                    </div>
-                </div>
-            </section>
-            
-            <section class="info-section">
-                <h2>Schedule</h2>
-                <div class="schedule-card">
-                    <h3>Friday, July 24th</h3>
-                    <ul>
-                        <li><span class="time">Evening</span> <strong>Get-together & Pickup Games</strong><br>Join us for casual games and meet the other players.</li>
-                    </ul>
-                    
-                    <h3>Saturday, July 25th</h3>
-                    <ul>
-                        <li><span class="time">TBA</span> <strong>Tournament Day 1</strong></li>
-                    </ul>
+        <h1>Info for Spectators</h1>
+        <div class="content-wrapper">
 
-                    <h3>Sunday, July 26th</h3>
-                    <ul>
-                        <li><span class="time">TBA</span> <strong>Tournament Day 2 & Finals</strong></li>
-                    </ul>
-                </div>
+            <section class="fi-box">
+                <h2>Ohjeita katsojille</h2>
+                <p>
+                    Tervetuloa seuraamaan tuplakiekon (Double Disc Court) European
+                    Open -turnausta Talin liikuntapuistoon (Purotie 8) 25.–26.7.2026.
+                    Kenttien 1 ja 2 vieressä on katsomot. Paras aika saapua paikalle
+                    on sunnuntaina klo 12.15 alkaen, jolloin pelataan välierät ja
+                    sijoitusottelut &ndash; välierät pelataan katsomoiden vieressä
+                    kentillä 1 ja 2. Vapaa pääsy!
+                </p>
             </section>
+
+            <section>
+                <h2>When to come</h2>
+                <p>
+                    Spectators are very welcome, and entry is free. The
+                    <strong>best time to come is Sunday 26th July from 12:15
+                    onwards</strong>, when the semi-finals and placement matches are
+                    played. The semi-finals take place on <strong>courts 1 and 2,
+                    right next to the stands</strong>.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Sunday highlights</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>12:15</td>
+                            <td>Semi-finals and placement matches</td>
+                        </tr>
+                        <tr>
+                            <td>13:30</td>
+                            <td>Third-place playoff</td>
+                        </tr>
+                        <tr>
+                            <td>14:15</td>
+                            <td>Final</td>
+                        </tr>
+                        <tr>
+                            <td>~16:00</td>
+                            <td>Medal ceremony</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    There is play throughout the weekend: pool games run on Saturday
+                    from 09:45 to 16:00 and on Sunday morning from 09:45 onwards.
+                </p>
+            </section>
+
+            <section>
+                <h2>Where to watch</h2>
+                <p>
+                    There are stands next to <strong>courts 1 and 2</strong> — this
+                    is where the semi-finals will be played, so the best matches
+                    happen right in front of you.
+                </p>
+            </section>
+
+            <section>
+                <h2>Getting there</h2>
+                <figure>
+                    <img src="/tali_map.png" alt="The tournament venue" />
+                    <figcaption aria-hidden="true">The tournament venue</figcaption>
+                </figure>
+                <p>
+                    The tournament courts are located in the Tali Sports Park. See
+                    the map above for entrance instructions.
+                </p>
+                <p>The address is: Purotie 8, 00380 Helsinki, Finland</p>
+                <ul>
+                    <li><a href="https://www.google.com/maps/search/?api=1&amp;query=60.2128,24.8700">Google Maps</a></li>
+                    <li><a href="https://www.openstreetmap.org/?mlat=60.2128&amp;mlon=24.8700#map=17/60.2128/24.8700">OpenStreetMap</a></li>
+                </ul>
+                <p>
+                    We recommend using public transport (HSL) — the venue is in zone
+                    AB. If you arrive by car, there is a spacious parking lot right
+                    next to the venue (paid via the ParkMan app). More travel details
+                    are on the <a href="/participants">participants info page</a>.
+                </p>
+            </section>
+
+            <section>
+                <h2>Can't make it?</h2>
+                <p>
+                    Matches will be streamed by Studio Allround:
+                    <a href="https://www.youtube.com/@studioallround/live">www.youtube.com/@studioallround/live</a>
+                </p>
+            </section>
+
         </div>
 
         <section class="organisers-section">
@@ -76,85 +136,108 @@ import Layout from '../layouts/Layout.astro';
 <style>
     .page-content {
         padding: 4rem var(--spacing-md);
+        max-width: 900px;
+        margin: 0 auto;
     }
-    
-    .info-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 3rem;
-        margin-top: 2rem;
-    }
-    
-    @media (min-width: 768px) {
-        .info-grid {
-            grid-template-columns: 1fr 1fr;
-        }
-    }
-    
-    .info-card, .schedule-card {
-        background: white;
-        padding: 2rem;
+
+    .content-wrapper > section {
+        background: #fff;
+        padding: 2.5rem;
         border-radius: 2px;
         box-shadow: var(--shadow-sm);
         border-left: 4px solid var(--color-orange);
-        height: 100%;
+        margin-bottom: 3rem;
     }
-    
-    .icon-text {
-        margin-bottom: 1.5rem;
-    }
-    
-    .icon-text:last-child {
+
+    .content-wrapper > section:last-child {
         margin-bottom: 0;
     }
-    
-    .label {
-        display: block;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        font-size: 0.75rem;
-        font-weight: 700;
-        color: var(--color-orange);
-        margin-bottom: 0.25rem;
-    }
-    
-    .value {
-        font-size: 1.25rem;
-        font-weight: 500;
-    }
-    
-    .schedule-card h3 {
-        color: var(--color-black);
-        border-bottom: 2px solid rgba(0,0,0,0.05);
-        padding-bottom: 0.5rem;
-        margin-top: 1.5rem;
-    }
-    
-    .schedule-card h3:first-child {
-        margin-top: 0;
-    }
-    
-    ul {
-        list-style: none;
-        padding: 0;
-        margin-top: 1rem;
-    }
-    
-    li {
+
+    section > h2 {
+        font-size: 1.9rem;
         margin-bottom: 1rem;
-        padding-left: 1rem;
-        border-left: 3px solid var(--color-yellow);
-    }
-    
-    .time {
         display: inline-block;
-        background: var(--color-bg);
-        padding: 0.1rem 0.5rem;
-        border-radius: 4px;
+    }
+
+    section > h2::after {
+        content: "";
+        display: block;
+        width: 60px;
+        height: 4px;
+        background: var(--color-orange);
+        margin-top: 0.5rem;
+    }
+
+    /* Finnish callout box on top — black card, like the site's blockquotes. */
+    .content-wrapper > section.fi-box {
+        background: var(--color-black);
+        color: #fff;
+    }
+
+    .fi-box > h2 {
+        color: var(--color-orange);
+    }
+
+    .fi-box p {
+        color: #fff;
+        margin-bottom: 0;
+    }
+
+    p {
+        margin-bottom: 1rem;
+    }
+
+    ul {
+        margin: 0.5rem 0 1rem 1.5rem;
+    }
+
+    li {
+        margin-bottom: 0.4rem;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    thead th {
+        background: var(--color-black);
+        color: #fff;
+        font-family: var(--font-heading);
+        font-weight: 400;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        text-align: left;
+        padding: 0.55rem 0.75rem;
+    }
+
+    tbody td {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--color-border);
+        vertical-align: top;
+    }
+
+    tbody tr:nth-child(even) {
+        background: var(--color-cream);
+    }
+
+    figure {
+        margin: 1.5rem 0;
+    }
+
+    figure img {
+        width: 100%;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+    }
+
+    figcaption {
         font-size: 0.8rem;
-        font-weight: 600;
-        margin-right: 0.5rem;
         color: var(--color-text-muted);
+        font-style: italic;
+        margin-top: 0.5rem;
     }
 
     .organisers-section {
@@ -162,6 +245,10 @@ import Layout from '../layouts/Layout.astro';
         padding-top: 3rem;
         border-top: 2px solid var(--color-border);
         text-align: center;
+    }
+
+    .organisers-section > h2 {
+        font-size: 1.9rem;
     }
 
     .organisers-logos {
